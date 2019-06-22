@@ -1,15 +1,17 @@
 import json
 import re
 
-class QTWSConfigParser:
-    def __init__(self, config_filename):
-        with open(config_filename) as f:
-            self.complete_json = json.load(f)
+from PyQt5.QtCore import QUrl
+
+class QTWSConfig:
+    def __init__(self, configFilename):
+        with open(configFilename) as f:
+            self.completeJson = json.load(f)
         self.__loadData()
 
     def __loadData(self):
         try:
-            self.name = self.complete_json['name']
+            self.name = self.completeJson['name']
             if type(self.name) != str:
                 raise QTWSConfigException("The parameter name should be a string parameter")
             if "/" in self.name or "//" in self.name:
@@ -18,63 +20,65 @@ class QTWSConfigParser:
             raise QTWSConfigException("Cannot find the name in the configuration file")
         
         try:
-            self.scope = self.complete_json['scope']
+            self.scope = self.completeJson['scope']
             if type(self.scope) != list:
                 raise QTWSConfigException("The scope should be an array")
         except KeyError:
             raise QTWSConfigException("Cannot find the scope in the configuration file")
         
         try:
-            self.home = self.complete_json['home']
+            self.home = self.completeJson['home']
             if type(self.home) != str:
                 raise QTWSConfigException("The parameter home should be a string parameter")
+            
+            self.home = QUrl(self.home)
         except KeyError:
             raise QTWSConfigException("Cannot find the home in the configuration file")
         
         try:
-            self.icon = self.complete_json['icon']
+            self.icon = self.completeJson['icon']
             if type(self.icon) != str:
                 raise QTWSConfigException("The parameter icon should be a string parameter")
         except KeyError:
             raise QTWSConfigException("Cannot find the icon in the configuration file")
         
         try:
-            self.cacheMB = self.complete_json['cacheMB']
+            self.cacheMB = self.completeJson['cacheMB']
             if type(self.cacheMB) != int:
                 raise QTWSConfigException("The parameter cacheMB should be an integer parameter")
         except KeyError:
             self.cacheMB = 50
         
         try:
-            self.saveSession = self.complete_json['saveSession']
+            self.saveSession = self.completeJson['saveSession']
             if type(self.saveSession) != bool:
                 raise QTWSConfigException("The parameter saveSession should be a boolean parameter")
         except KeyError:
             self.saveSession = False
             
         try:
-            self.menuDisabled = self.complete_json['menuDisabled']
-            if type(self.alwaysOnTop) != bool:
+            self.menuDisabled = self.completeJson['menuDisabled']
+            if type(self.menuDisabled) != bool:
                 raise QTWSConfigException("The parameter menuDisabled should be a boolean parameter")
         except KeyError:
             self.menuDisabled = False
             
         try:
-            self.alwaysOnTop = self.complete_json['alwaysOnTop']
+            self.alwaysOnTop = self.completeJson['alwaysOnTop']
             if type(self.alwaysOnTop) != bool:
                 raise QTWSConfigException("The parameter alwaysOnTop should be a boolean parameter")
         except KeyError:
             self.alwaysOnTop = False
             
         try:
-            self.permissions = self.complete_json['permissions']
+            self.permissions = self.completeJson['permissions']
             if type(self.permissions) != list:
                 raise QTWSConfigException("The parameter permissions should be a list parameter")
         except KeyError:
             self.alwaysOnTop = False
             
         try:
-            menu = self.complete_json['menu']
+            menu = self.completeJson['menu']
             if type(menu) != list:
                 raise QTWSConfigException("The menu should be a list parameter")
             self.menu = list()
@@ -87,7 +91,7 @@ class QTWSConfigParser:
             self.menu = list()
         
         try:
-            plugins = self.complete_json['plugins']
+            plugins = self.completeJson['plugins']
             if type(plugins) != list:
                 raise QTWSConfigException("The plugins should be a list parameter")
             self.plugins = list()
@@ -97,9 +101,13 @@ class QTWSConfigParser:
             self.plugins = list()
         
     def isInScope(self, url):
+        if type(url) == QUrl: 
+            url = url.toString()
+            
         for scope in self.scope:
             if re.search(scope, url) != None:
                 return True
+            
         return False
     
     def hasPermission(self, permission):
@@ -126,6 +134,14 @@ class QTWSPluginInfo:
 class QTWSMenuItemInfo:
     def __init__(self, entry):
         self.title      = entry['title']
-        self.action     = entry['action']
-        self.icon       = entry['icon']
-        self.separator  = entry['separator']
+        self.action     = QUrl(entry['action'])
+        
+        if 'icon' in entry.keys():
+            self.icon = entry['icon']
+        else:
+            self.icon = None
+            
+        if 'separator' in entry.keys():
+            self.separator  = entry['separator']
+        else:
+            self.separator = False

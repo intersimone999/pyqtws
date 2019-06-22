@@ -3,27 +3,25 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 from config import *
-from web import QTWSWebView
+from web import QTWSWebView, QTWSWebPage
+from plugins import QTWSPluginManager
 
-class App(QWidget):
-    def __init__(self, config_file):
+class QTWSMainWindow(QWidget):
+    def __init__(self, configFilename):
         super().__init__()
         
-        self.configuration = QTWSConfigParser(config_file)
-        self.title = self.configuration.name
-        self.left = 10
-        self.top = 10
-        self.width = 640
-        self.height = 480
-        self.initUI()
+        self.config = QTWSConfig(configFilename)
+        QTWSPluginManager.instance().loadPlugins(self.config)
+        self.__initUI()
         
-    def initUI(self):
-        self.setWindowTitle(self.title)
+    def __initUI(self):
+        self.setWindowTitle(self.config.name)
         
-        self.web = QTWSWebView()
-        self.web.load(QUrl(self.configuration.home))
+        self.web = QTWSWebView(self.config)
+        self.web.load(QUrl(self.config.home))
         
         layout = QVBoxLayout()
         layout.addWidget(self.web)
@@ -31,11 +29,14 @@ class App(QWidget):
         
         self.setLayout(layout)
         
-        self.setWindowIcon( QIcon(self.configuration.icon) )
+        self.setWindowIcon(QIcon(self.config.icon))
         self.show()
+ 
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = App(sys.argv[1])
+    ex = QTWSMainWindow(sys.argv[1])
     sys.exit(app.exec_())
  
+
+
