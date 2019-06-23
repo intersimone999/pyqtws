@@ -19,7 +19,10 @@ class QTWSPlugin:
     def addMenuItems(self, menu):
         pass
     
-    def isUrlBlocked(self, url):
+    def isURLBlacklisted(self, url):
+        return False
+    
+    def isURLWhitelisted(self, url):
         return False
         
 class QTWSPluginManager:

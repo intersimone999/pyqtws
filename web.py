@@ -2,7 +2,7 @@ from threading import Thread
 import webbrowser
 
 from PyQt5.Qt import Qt
-from PyQt5.QtWidgets import QApplication, QMessageBox, QMenu, QAction, QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox, QMenu, QAction
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWebEngineWidgets import QWebEnginePage
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -118,17 +118,27 @@ class QTWSWebPage(QWebEnginePage):
         if not isMainFrame:
             return True
         
+        if self.__checkIfWhitelisted(url):
+            return True
+        
         urlOutOfScope   = not self.config.isInScope(url)
-        pluginBlocksUrl = self.__checkIfAnyPluginBlocks(url)
-        if urlOutOfScope or pluginBlocksUrl:
+        pluginBlacklist = self.__checkIfBlacklisted(url)        
+        if urlOutOfScope or pluginBlacklist:
             webbrowser.open(url.toString())
             return False
         else:
             return True
     
-    def __checkIfAnyPluginBlocks(self, url):
+    def __checkIfBlacklisted(self, url):
         for plugin in QTWSPluginManager.instance().plugins:
-            if plugin.isURLBlocked(url):
+            if plugin.isURLBlacklisted(url):
+                return True
+        
+        return False
+    
+    def __checkIfWhitelisted(self, url):
+        for plugin in QTWSPluginManager.instance().plugins:
+            if plugin.isURLWhitelisted(url):
                 return True
         
         return False

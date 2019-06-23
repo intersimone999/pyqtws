@@ -1,42 +1,50 @@
 import sys
+import webbrowser
+import glob
+import os
+from argparse import ArgumentParser
 
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWidgets import QApplication
 
+from mainwindow import QTWSMainWindow
 from config import *
-from web import QTWSWebView, QTWSWebPage
-from plugins import QTWSPluginManager
-
-class QTWSMainWindow(QWidget):
-    def __init__(self, configFilename):
-        super().__init__()
-        
-        self.config = QTWSConfig(configFilename)
-        QTWSPluginManager.instance().loadPlugins(self.config)
-        self.__initUI()
-        
-    def __initUI(self):
-        self.setWindowTitle(self.config.name)
-        
-        self.web = QTWSWebView(self.config)
-        self.web.load(QUrl(self.config.home))
-        
-        layout = QVBoxLayout()
-        layout.addWidget(self.web)
-        layout.setContentsMargins(0,0,0,0)
-        
-        self.setLayout(layout)
-        
-        self.setWindowIcon(QIcon(self.config.icon))
-        self.show()
+from appchooser import AppChooser
  
+__home__ = os.path.dirname(os.path.realpath(__file__))
+
+def findAppByUrl(url):
+    global __home__
+    for appConfig in glob.iglob(os.path.join(__home__, 'apps/*.qtws')):
+        conf = QTWSConfig(appConfig)
+        if conf.isInScope(url):
+            return appConfig.split("/")[-1].replace('.qtws', '')
+        
+    return None
     
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = QTWSMainWindow(sys.argv[1])
-    sys.exit(app.exec_())
- 
+    parser = ArgumentParser(description='The new web.')
+    parser.add_argument('-a', '--app',  help='opens the specified app', required=False)
+    parser.add_argument('url', help='opens the specified URL with the correct app', nargs='?')
 
-
+    args = parser.parse_args()
+    qtwsAppName = args.app
+    print(qtwsAppName)
+    if qtwsAppName == None:
+        if args.url != None:
+            qtwsAppName = findAppByUrl(args.url)
+            if qtwsAppName == None:
+                webbrowser.open(args.url)
+                sys.exit(0)
+        else:
+            qtwsAppName = "appChooser"
+        
+    appChooser = None
+    if qtwsAppName == "appChooser":
+        appChooser = AppChooser(os.path.join(__home__, "apps/appChooser"))
+        appChooser.startServing()
+    
+    if qtwsAppName != None:
+        qtwsAppName = os.path.join(__home__, "apps/" + qtwsAppName.lower() + ".qtws")
+        app = QApplication(sys.argv)
+        ex = QTWSMainWindow(qtwsAppName, args.url, appChooser)
+        sys.exit(app.exec_())
