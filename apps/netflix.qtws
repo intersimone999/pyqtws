@@ -2,7 +2,7 @@
         "name": "Netflix",
         "scope": ["netflix.com"],
         "plugins": [
-            {"name": "multimedia"}
+            {"name": "Multimedia"}
         ],
         "home": "http://netflix.com",
         "icon": "/usr/share/pixmaps/netflix-desktop.svg",
