@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import webbrowser
 import glob
@@ -29,10 +31,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     qtwsAppName = args.app
     print(qtwsAppName)
-    if qtwsAppName == None:
-        if args.url != None:
+    if not qtwsAppName:
+        if args.url:
             qtwsAppName = findAppByUrl(args.url)
-            if qtwsAppName == None:
+            if not qtwsAppName:
                 webbrowser.open(args.url)
                 sys.exit(0)
         else:
@@ -43,7 +45,7 @@ if __name__ == '__main__':
         appChooser = AppChooser(os.path.join(__home__, "apps/appChooser"))
         appChooser.startServing()
     
-    if qtwsAppName != None:
+    if qtwsAppName:
         qtwsAppName = os.path.join(__home__, "apps/" + qtwsAppName.lower() + ".qtws")
         app = QApplication(sys.argv)
         ex = QTWSMainWindow(qtwsAppName, args.url, appChooser)

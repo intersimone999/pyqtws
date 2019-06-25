@@ -29,7 +29,7 @@ class QTWSPluginManager:
     __instance = None
     
     def instance():
-        if QTWSPluginManager.__instance == None:
+        if not QTWSPluginManager.__instance:
             QTWSPluginManager.__instance = QTWSPluginManager()
             
         return QTWSPluginManager.__instance

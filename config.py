@@ -105,7 +105,7 @@ class QTWSConfig:
             url = url.toString()
             
         for scope in self.scope:
-            if re.search(scope, url) != None:
+            if re.search(scope, url):
                 return True
             
         return False

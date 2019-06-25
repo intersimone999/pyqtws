@@ -44,7 +44,7 @@ class QTWSWebView(QWebEngineView):
         self.__customActions = list()
         for menuItem in self.config.menu:
             action = None
-            if menuItem.icon != None:
+            if menuItem.icon:
                 action = QAction(QIcon.fromTheme(menuItem.icon), menuItem.title)
             else:
                 action = QAction(menuItem.title)
@@ -97,7 +97,7 @@ class QTWSWebView(QWebEngineView):
         QApplication.quit()
         
     def __menuClick(self, action):
-        if action.data() != None:
+        if action.data():
             self.setUrl(action.data())
         
 class QTWSWebPage(QWebEnginePage):
