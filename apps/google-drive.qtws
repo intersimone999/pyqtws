@@ -1,0 +1,11 @@
+{
+        "name": "Google Drive",
+        "scope": ["https?\\:\\/\\/.*\\.google\\.com\\/drive(?:\\/.*|)", "https?\\:\\/\\/drive\\.google\\.com(?:\\/.*|)"],
+        "plugins": [
+            { "name": "GoogleAuthentication" }
+        ],
+        "home": "http://drive.google.com",
+        "icon": "icons/google-drive.svg",
+        "saveSession": false,
+        "download": true
+}

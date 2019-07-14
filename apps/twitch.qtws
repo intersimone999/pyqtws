@@ -1,0 +1,11 @@
+{
+        "name": "Twitch",
+        "scope": ["twitch.tv"],
+        "plugins": [
+            { "name": "Multimedia" }
+        ],
+        "home": "http://twitch.tv",
+        "icon": "icons/twitch.svg",
+        "saveSession": false,
+        "multimedia": true
+}

@@ -1,0 +1,9 @@
+{
+        "name": "Wikipedia",
+        "scope": ["wikipedia.org"],
+        "plugins": [],
+        "home": "http://wikipedia.org",
+        "icon": "icons/wikipedia.svg",
+        "saveSession": false,
+        "menu": []
+}

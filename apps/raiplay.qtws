@@ -1,12 +1,11 @@
 {
         "name": "RaiPlay",
         "scope": ["https?\\:\\/\\/(?:www\\.|)raiplay.it(?:\\/.*|)"],
-        "plugins": [
-            {"name": "Multimedia"}
-        ],
+        "plugins": [],
         "home": "https://www.raiplay.it",
-        "icon": "/usr/share/pixmaps/raiplay-desktop.svg",
+        "icon": "icons/raiplay.svg",
         "saveSession": false,
+        "multimedia": true,
         "menu": [
             {
                 "title": "Rai 1 (diretta)",

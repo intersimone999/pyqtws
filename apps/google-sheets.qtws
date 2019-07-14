@@ -1,0 +1,11 @@
+{
+        "name": "Google Sheets",
+        "scope": ["https?\\:\\/\\/docs\\.google\\.com\\/spreadsheets(?:\\/.*|)", "https?\\:\\/\\/sheets\\.google\\.com(?:\\/.*|)"],
+        "plugins": [
+            { "name": "GoogleAuthentication" }
+        ],
+        "home": "http://docs.google.com/spreadsheets",
+        "icon": "icons/google-sheets.svg",
+        "saveSession": false,
+        "download": true
+}

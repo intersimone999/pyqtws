@@ -1,0 +1,9 @@
+{
+        "name": "VVVVID",
+        "scope": ["vvvvid.it"],
+        "plugins": [],
+        "home": "https://vvvvid.it",
+        "icon": "icons/vvvvid.svg",
+        "saveSession": true,
+        "multimedia": true
+}

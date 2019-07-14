@@ -1,10 +1,9 @@
 {
         "name": "Netflix",
         "scope": ["netflix.com"],
-        "plugins": [
-            {"name": "Multimedia"}
-        ],
+        "plugins": [],
         "home": "http://netflix.com",
-        "icon": "/usr/share/pixmaps/netflix-desktop.svg",
-        "saveSession": true
+        "icon": "icons/netflix.svg",
+        "saveSession": true,
+        "multimedia": true
 }

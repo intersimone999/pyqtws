@@ -1,0 +1,13 @@
+{
+        "name": "Gmail",
+        "scope": ["https:\\/\\/mail.google.com\\/.*"],
+        "plugins": [
+            {
+                "name": "GoogleAuthentication"
+            }
+        ],
+        "home": "https://mail.google.com",
+        "icon": "",
+        "saveSession": false,
+        "menuDisabled": false
+}

@@ -1,9 +1,11 @@
 {
         "name": "Youtube",
         "scope": ["https?:\\/\\/(?:[^.]*\\.|)youtube\\.com(?:\\/.*|)", "https?:\\/\\/youtu\\.be(?:\\/.*|)", "https:\\/\\/accounts.google.com(?:\\/.*|)"],
-        "plugins": [{"name": "Multimedia"}],
+        "plugins": [
+            { "name" : "Multimedia" }
+        ],
         "home": "http://youtube.com",
-        "icon": "/usr/share/pixmaps/youtube-desktop.svg",
+        "icon": "icons/youtube.svg",
         "saveSession": false,
         "multimedia": true,
         "menu": [

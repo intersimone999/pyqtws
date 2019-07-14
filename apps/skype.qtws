@@ -1,0 +1,11 @@
+{
+        "name": "Skype",
+        "scope": ["https\\:\\/\\/.*\\.skype\\.com", "https\\:\\/\\/login\\.live\\.com\\/login.*"],
+        "plugins": [],
+        "home": "http://web.skype.com/",
+        "icon": "icons/skype.svg",
+        "saveSession": true,
+        "menuDisabled": false,
+        "alwaysOnTop": true,
+        "download": true
+}

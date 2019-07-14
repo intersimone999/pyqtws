@@ -1,0 +1,9 @@
+{
+        "name": "Amazon PrimeVideo",
+        "scope": ["primevideo.com"],
+        "plugins": [],
+        "home": "http://primevideo.com",
+        "icon": "icons/primevideo.svg",
+        "saveSession": true,
+        "multimedia": true
+}

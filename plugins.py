@@ -1,46 +1,53 @@
-from config import QTWSConfig
+from PyQt5.QtWidgets import QMenu
+from PyQt5.Qt import QUrl
+
 
 class QTWSPlugin:
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.name = name
-        
-    def webEngineSetup(self, web):
+
+    def web_engine_setup(self, web):
         pass
-        
-    def onWindowCreated(self):
+
+    def window_setup(self, window):
         pass
-    
-    def onActionClicked(self):
+
+    def on_action_clicked(self):
         pass
-    
-    def onPageLoaded(self):
+
+    def on_page_loaded(self, url: QUrl):
         pass
-    
-    def addMenuItems(self, menu):
+
+    def add_menu_items(self, menu: QMenu):
         pass
-    
-    def isURLBlacklisted(self, url):
+
+    def is_url_blacklisted(self, url: QUrl):
         return False
-    
-    def isURLWhitelisted(self, url):
+
+    def is_url_whitelisted(self, url: QUrl):
         return False
-        
+
+
 class QTWSPluginManager:
     __instance = None
-    
+
+    def __init__(self):
+        self.plugins = None
+
+    @staticmethod
     def instance():
         if not QTWSPluginManager.__instance:
             QTWSPluginManager.__instance = QTWSPluginManager()
-            
+
         return QTWSPluginManager.__instance
-        
-    def loadPlugins(self, config):
+
+    def load_plugins(self, config):
         self.plugins = list()
-        for pluginInfo in config.plugins:
-            pluginModule = __import__('plugin.' + pluginInfo.name, globals(), locals(), [pluginInfo.name])
-            pluginInstance = pluginModule.instance(pluginInfo.params)
-            self.plugins.append(pluginInstance)
-            
-    def forEach(self, action):
+        for plugin_info in config.plugins:
+            plugin_module = __import__('plugin.' + plugin_info.name, globals(), locals(), [plugin_info.name])
+            plugin_instance = plugin_module.instance(config, plugin_info.params)
+            self.plugins.append(plugin_instance)
+
+    def each(self, action: callable):
         for plugin in self.plugins:
             action(plugin)
