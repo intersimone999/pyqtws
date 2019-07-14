@@ -1,31 +1,28 @@
 #!/usr/bin/env python
 
 import setuptools
-import sys
 import os
 import glob
 
-from config import QTWSConfig
+from pyqtws.config import QTWSConfig
 
-HOME_PATH = os.path.dirname(os.path.realpath(__file__))
+SRCDIR = "pyqtws"
+HOME_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + SRCDIR
 
-SUPPORTED_OS = ["linux"]
 
 def make_desktop_file(app_src, desktop_dest):
-    global HOME_PATH
-
     print("Building desktop file for " + app_src)
 
     config = QTWSConfig(app_src)
 
-    script_path = HOME_PATH + "/" + "main.py -a " + os.path.basename(app_src).replace(".qtws", "")
+    script_path = "silos -a " + os.path.basename(app_src).replace(".qtws", "")
 
     content = "[Desktop Entry]\n" \
               "Categories=Internet\n" \
               "Comment=" + config.name + "\n" \
               "Exec=" + script_path + "\n" \
               "GenericName=" + config.name + "\n" \
-              "Icon=" + HOME_PATH + "/" + config.icon + "\n" \
+              "Icon=" + config.icon + "\n" \
               "MimeType=\n" \
               "Name=" + config.name + "\n" \
               "Path=\n" \
@@ -36,30 +33,32 @@ def make_desktop_file(app_src, desktop_dest):
         f.write(content)
 
 
-if sys.platform not in SUPPORTED_OS:
-    print("ERROR: Your operating system is not supported yet.")
-
 for app in glob.glob("apps/*.qtws"):
     app_base_name = app.replace("apps/", "").replace(".qtws", "")
     desktop_file = os.path.join(HOME_PATH, "desktops/" + app_base_name + ".desktop")
     make_desktop_file(app, desktop_file)
 
-    if sys.platform == "linux":
-        system_app = "/usr/share/applications/qtws-app-" + app_base_name  + ".desktop"
-        if os.path.exists(system_app):
-            os.remove(system_app)
 
-        os.symlink(desktop_file, system_app)
+package_data = {
+    "pyqtws.apps": list(map(lambda f: os.path.basename(f), glob.glob(SRCDIR + "/apps/*.qtws"))),
+    "pyqtws.apps.appChooser": list(map(lambda f: os.path.basename(f), glob.glob(SRCDIR + "/apps/appChooser*.qtws"))),
+    "pyqtws.icons": list(map(lambda f: os.path.basename(f), glob.glob(SRCDIR + "/icons/*"))),
+    "pyqtws.desktops": list(map(lambda f: os.path.basename(f), glob.glob(SRCDIR + "/desktops/*")))
+}
 
-setuptools.setup(name='pyqtws',
+print(package_data)
+
+setuptools.setup(name='silos',
                  version='0.1',
+                 scripts=["silos"],
                  description='Standalone website wrapper',
                  url='http://github.com/intersimone999/pyqtws',
                  author='Simone Scalabrino',
                  author_email='simone@datasound.it',
                  license='MIT',
-                 packages=["pyqtws"],
+                 packages=setuptools.find_packages(),
                  install_requires=[
                      'PyQt5', 'PyQtWebEngine', 'dbus-python', 'pygi'
                  ],
+                 package_data=package_data,
                  zip_safe=False)

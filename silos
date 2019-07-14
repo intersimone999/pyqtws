@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+
+python "$(python -c "import os;import pyqtws as _; print(os.path.dirname(_.__file__)+\"/main.py\")")" $@

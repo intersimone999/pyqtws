@@ -9,12 +9,15 @@ from config import *
 from web import QTWSWebView, QTWSWebPage
 from plugins import QTWSPluginManager
 
+import os
+
+__home__ = os.path.dirname(os.path.realpath(__file__))
 
 class QTWSMainWindow(QWidget):
-    def __init__(self, config_filename: str, url: str, app_chooser: AppChooser = None):
+    def __init__(self, app_id, config_filename: str, url: str, app_chooser: AppChooser = None):
         super().__init__()
 
-        self.config = QTWSConfig(config_filename)
+        self.config = QTWSConfig(config_filename, app_id)
         self.app_chooser = app_chooser
         self.app_settings = QSettings(self.config.name, "Save State", self)
 
@@ -48,7 +51,7 @@ class QTWSMainWindow(QWidget):
 
         self.setLayout(layout)
 
-        self.setWindowIcon(QIcon(self.config.icon))
+        self.setWindowIcon(QIcon(os.path.join(__home__, self.config.icon)))
         self.show()
 
     def __init_web_view(self):

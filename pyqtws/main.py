@@ -13,14 +13,17 @@ from config import *
 from appchooser import AppChooser
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
+__app_folder__ = "apps"
 
 
 def find_app_by_url(url: str):
     global __home__
-    for appConfig in glob.iglob(os.path.join(__home__, 'apps/*.qtws')):
-        conf = QTWSConfig(appConfig)
+    global __app_folder__
+
+    for app_config in glob.iglob(os.path.join(__home__, __app_folder__, '*.qtws')):
+        conf = QTWSConfig(app_config)
         if conf.in_scope(url):
-            return appConfig.split("/")[-1].replace('.qtws', '')
+            return app_config.split("/")[-1].replace('.qtws', '')
 
     return None
 
@@ -31,24 +34,25 @@ if __name__ == '__main__':
     parser.add_argument('url', help='opens the specified URL with the correct app', nargs='?')
 
     args = parser.parse_args()
-    qtws_app_name = args.app
-    print(qtws_app_name)
-    if not qtws_app_name:
+    app_id = args.app
+
+    if not app_id:
         if args.url:
-            qtws_app_name = find_app_by_url(args.url)
-            if not qtws_app_name:
+            app_id = find_app_by_url(args.url)
+            if not app_id:
                 webbrowser.open(args.url)
                 sys.exit(0)
         else:
-            qtws_app_name = "appChooser"
+            app_id = "appChooser"
 
     app_chooser = None
-    if qtws_app_name == "appChooser":
-        app_chooser = AppChooser(os.path.join(__home__, "apps/appChooser"))
+    if app_id == "appChooser":
+        app_chooser = AppChooser(os.path.join(__home__, __app_folder__, "appChooser"))
         app_chooser.start_serving()
 
-    if qtws_app_name:
-        qtws_app_name = os.path.join(__home__, "apps/" + qtws_app_name.lower() + ".qtws")
+    if app_id:
+        app_id = app_id.lower()
+        app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
         app = QApplication(sys.argv)
-        ex = QTWSMainWindow(qtws_app_name, args.url, app_chooser)
+        ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
         sys.exit(app.exec_())

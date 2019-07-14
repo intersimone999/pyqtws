@@ -9,6 +9,8 @@ from config import QTWSConfig
 
 from threading import Thread
 from dbus.service import Object
+import main
+
 import random
 import time
 import dbus
@@ -67,7 +69,7 @@ class Multimedia(QTWSPlugin):
     def __init_mpris2(self):
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 
-        self.__mpris2 = MultimediaPluginMPRIS2(self.config.name, self.window, self.web)
+        self.__mpris2 = MultimediaPluginMPRIS2(self.config.app_id, self.config.name, self.window, self.web)
 
         self.__metadata = dict()
         self.__web_thread = Thread(target=self.__update_playback_status)
@@ -94,7 +96,8 @@ class MultimediaPluginMPRIS2(Object):
     MPRIS_INTERFACE = "org.mpris.MediaPlayer2"
     MPRIS_PLAYER_INTERFACE = "org.mpris.MediaPlayer2.Player"
 
-    def __init__(self, name: str, window: QTWSMainWindow, web: QTWSWebView):
+    def __init__(self, app_id: str, name: str, window: QTWSMainWindow, web: QTWSWebView):
+        global qtws_app_id
         self.bus = dbus.SessionBus()
         self.service_name = "org.mpris.MediaPlayer2.qtws_" + name + str(random.randint(0, 9999))
         bus_name = dbus.service.BusName(self.service_name, bus=self.bus)
@@ -112,8 +115,8 @@ class MultimediaPluginMPRIS2(Object):
         self.properties[self.MPRIS_INTERFACE]["CanRaise"] = False
         self.properties[self.MPRIS_INTERFACE]["HasTrackList"] = False
         self.properties[self.MPRIS_INTERFACE]["Identity"] = name
-        # TODO Change desktop entry!
-        self.properties[self.MPRIS_INTERFACE]["DesktopEntry"] = "vivaldi-stable"
+
+        self.properties[self.MPRIS_INTERFACE]["DesktopEntry"] = "silos-" + app_id
         self.properties[self.MPRIS_INTERFACE]["SupportedUriSchemes"] = dbus.Array([], signature="s")
         self.properties[self.MPRIS_INTERFACE]["SupportedMimeTypes"] = dbus.Array([], signature="s")
         self.PropertiesChanged(self.MPRIS_INTERFACE, self.properties[self.MPRIS_INTERFACE], [])

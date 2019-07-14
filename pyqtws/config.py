@@ -5,9 +5,11 @@ from PyQt5.QtCore import QUrl
 
 
 class QTWSConfig:
-    def __init__(self, config_filename: str):
+    def __init__(self, config_filename: str, app_id: str = None):
         with open(config_filename) as f:
             self.complete_json = json.load(f)
+
+        self.app_id = app_id
         self.__load_data()
 
     def __load_data(self):
