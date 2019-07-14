@@ -1,4 +1,6 @@
 *.pyc
 **/__pycache__
 .idea
-desktops
+build
+dist
+pyqtws/desktops
