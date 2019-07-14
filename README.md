@@ -1,7 +1,7 @@
-# PyQTWS
+# Silos
 A python re-implementation of QTWS.
 
-PyQTWS is a QT webengine program to easily create very basic and lightweight desktop webapps. PyQTWS now automatically integrates a set of pre-defined apps. Make a pull request to integrate more apps.
+Silos is a QT webengine program to easily create very basic and lightweight desktop webapps. Silos now automatically integrates a set of pre-defined apps. Make a pull request to integrate more apps.
 
 ## Requirements
 - qt5
@@ -20,26 +20,21 @@ Most others must compile qtwebengine with proprietary codecs.
 Read this <html>http://blog.qt.io/blog/2016/06/03/netflix-qt-webengine-5-7/</html>
 
 ## Installation
-- Install qt5
-- Compile qtwebengine according to the link above
-- `git clone https://github.com/intersimone999/qtws.git`
-- `cd qtws/build`
-- Type `qmake -config release ..`
-- Type `make`
-- Binary will be labeled `qtws`
+- Run `python setup.py bdist_wheel`
+- Run `pip install dist/*.whl`
 
 ## Run
-To run PyQTWS you can run the script `main.py` specifying:
-- The name of the app that you want to run. The app must be in the `app` folder and its name must be in lowercase;
-- The URL that you want to open; in that case, PyQTWS will open the URL with the most suited app or the default web browser.
+To run Silos you can run the shell script `silos`, specifying:
+- The name of the app that you want to run. The app must be in the `pyqtws/apps` folder and its name must be in lowercase;
+- The URL that you want to open; in that case, Silos will open the URL with the most suited app or the default web browser.
 
 Examples:
 - To open Netflix, run `python main.py -a Netflix` or `python main.py --app Netflix`
 - To open a YouTube video with a given URL, run `python main.py "https://www.youtube.com/watch?v=2MpUj-Aua48"`
 
 ## Features
-The installed PyQTWS allows you to easily create an embedded version of an online webapp. 
-A PyQTWS webapp features a context menu that can be activated with a right click anywhere. This menu allows to go back, to go to the home of the webapp and to reload the page.
+The installed Silos allows you to easily create an embedded version of an online webapp. 
+A Silos webapp features a context menu that can be activated with a right click anywhere. This menu allows to go back, to go to the home of the webapp and to reload the page.
 
 Each app is completely isolated from the others: it will have its own cache, cookies and storage.
 
@@ -96,7 +91,7 @@ The fields of the json are the following (required in italics):
 - cacheMB: maximum size of the cache (in MB). Default is 50.
 
 ## Plugin
-PyQTWS is easily extensible through plugin. A plugin must be placed in the `plugin` directory. The name of the plugin must match the name of the file and the name of the class. Each plugin script must have a `instantiate` method that returns the instance of the plugin. Check the `Multimedia` plugin to see an example.
+Silos is easily extensible through plugin. A plugin must be placed in the `plugin` directory. The name of the plugin must match the name of the file and the name of the class. Each plugin script must have a `instantiate` method that returns the instance of the plugin. Check the `Multimedia` plugin to see an example.
 
 Plugins allow to make some actions when some events happen. To see the full list of available actions, see the class `QTWSPlugin` in `plugins.py`.
 
