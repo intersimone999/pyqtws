@@ -13,6 +13,7 @@ import os
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
 
+
 class QTWSMainWindow(QWidget):
     def __init__(self, app_id, config_filename: str, url: str, app_chooser: AppChooser = None):
         super().__init__()
@@ -59,11 +60,11 @@ class QTWSMainWindow(QWidget):
 
         profile.setCachePath(profile.cachePath() + "/" + self.config.name)
         profile.setPersistentStoragePath(profile.persistentStoragePath() + "/" + self.config.name)
-        profile.setHttpCacheMaximumSize(self.config.cacheMB * 1024 * 1024)
+        profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
 
         self.web.page().fullScreenRequested.connect(self.__full_screen_requested)
 
-        if self.config.alwaysOnTop:
+        if self.config.always_on_top:
             self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     def __full_screen_requested(self, request: QWebEngineFullScreenRequest):
@@ -83,17 +84,17 @@ class QTWSMainWindow(QWidget):
     def __write_settings(self):
         self.app_settings.setValue("geometry/mainWindowGeometry", self.saveGeometry())
 
-        if not self.config.saveSession:
+        if not self.config.save_session:
             return
 
         site = self.web.url().toString()
         self.app_settings.setValue("site", site)
 
     def __read_settings(self):
-        if not self.config.saveSession or self.app_settings.value("state/mainWindowState"):
+        if not self.config.save_session or self.app_settings.value("state/mainWindowState"):
             return
 
-        if self.config.saveSession:
+        if self.config.save_session:
             geometry_data = self.app_settings.value("geometry/mainWindowGeometry")
             if geometry_data:
                 self.restoreGeometry(geometry_data)

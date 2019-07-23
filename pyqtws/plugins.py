@@ -8,6 +8,9 @@ class QTWSPlugin:
 
     def web_engine_setup(self, web):
         pass
+    
+    def web_profile_setup(self, profile):
+        pass
 
     def window_setup(self, window):
         pass

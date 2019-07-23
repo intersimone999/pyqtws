@@ -10,6 +10,19 @@ class QTWSConfig:
             self.complete_json = json.load(f)
 
         self.app_id = app_id
+        self.name: str = ""
+        self.description: str = ""
+        self.scope: list = list()
+        self.home: str = ""
+        self.icon: str = ""
+        self.cache_mb: int = 0
+        self.save_session: bool = False
+        self.menu_disabled: bool = False
+        self.always_on_top: bool = False
+        self.permissions: list = list()
+        self.menu: list = list()
+        self.plugins: list = list()
+
         self.__load_data()
 
     def __load_data(self):
@@ -21,6 +34,13 @@ class QTWSConfig:
                 raise QTWSConfigException("Illegal name " + self.name + ": it cannot contain slashes or backslashes.")
         except KeyError:
             raise QTWSConfigException("Cannot find the name in the configuration file")
+
+        try:
+            self.description = self.complete_json['description']
+            if type(self.description) != str:
+                raise QTWSConfigException("The parameter description should be a string parameter")
+        except KeyError:
+            self.description = ""
 
         try:
             self.scope = self.complete_json['scope']
@@ -46,45 +66,45 @@ class QTWSConfig:
             raise QTWSConfigException("Cannot find the icon in the configuration file")
 
         try:
-            self.cacheMB = self.complete_json['cacheMB']
-            if type(self.cacheMB) != int:
+            self.cache_mb = self.complete_json['cacheMB']
+            if type(self.cache_mb) != int:
                 raise QTWSConfigException("The parameter cacheMB should be an integer parameter")
         except KeyError:
-            self.cacheMB = 50
+            self.cache_mb = 50
 
         try:
-            self.saveSession = self.complete_json['saveSession']
-            if type(self.saveSession) != bool:
+            self.save_session = self.complete_json['saveSession']
+            if type(self.save_session) != bool:
                 raise QTWSConfigException("The parameter saveSession should be a boolean parameter")
         except KeyError:
-            self.saveSession = False
+            self.save_session = False
 
         try:
-            self.menuDisabled = self.complete_json['menuDisabled']
-            if type(self.menuDisabled) != bool:
+            self.menu_disabled = self.complete_json['menuDisabled']
+            if type(self.menu_disabled) != bool:
                 raise QTWSConfigException("The parameter menuDisabled should be a boolean parameter")
         except KeyError:
-            self.menuDisabled = False
+            self.menu_disabled = False
 
         try:
-            self.alwaysOnTop = self.complete_json['alwaysOnTop']
-            if type(self.alwaysOnTop) != bool:
+            self.always_on_top = self.complete_json['alwaysOnTop']
+            if type(self.always_on_top) != bool:
                 raise QTWSConfigException("The parameter alwaysOnTop should be a boolean parameter")
         except KeyError:
-            self.alwaysOnTop = False
+            self.always_on_top = False
 
         try:
             self.permissions = self.complete_json['permissions']
             if type(self.permissions) != list:
                 raise QTWSConfigException("The parameter permissions should be a list parameter")
         except KeyError:
-            self.alwaysOnTop = False
+            self.permissions = list()
 
         try:
             menu = self.complete_json['menu']
             if type(menu) != list:
                 raise QTWSConfigException("The menu should be a list parameter")
-            self.menu = list()
+            self.menu: list = list()
             for value in menu:
                 try:
                     self.menu.append(QTWSMenuItemInfo(value))
@@ -102,6 +122,26 @@ class QTWSConfig:
                 self.plugins.append(QTWSPluginInfo(value))
         except KeyError:
             self.plugins = list()
+
+    def problems(self):
+        problems: list = list()
+        if self.description == "":
+            problems.append("The given description is empty")
+
+        if self.cache_mb <= 0:
+            problems.append("The cache is disabled for this service")
+
+        if self.always_on_top:
+            problems.append("This service will be always on top")
+
+        if not self.in_scope(self.home):
+            problems.append("The home of this service is not in its scope")
+
+        for element in self.menu:
+            if not self.in_scope(element.action):
+                problems.append("The menu item \"" + element.title + "\" goes out of the scope of the app")
+
+        return problems
 
     def in_scope(self, url):
         if type(url) == QUrl:

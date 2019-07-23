@@ -4,7 +4,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtCore import QPoint, QUrl
 from PyQt5.QtWidgets import QApplication, QMessageBox, QMenu, QAction
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView, QWebEngineSettings
+from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView, QWebEngineSettings, QWebEngineProfile
 
 from config import QTWSConfig
 from plugins import QTWSPluginManager
@@ -18,7 +18,7 @@ class QTWSWebView(QWebEngineView):
         self.setPage(self.webPage)
         QTWSPluginManager.instance().each(lambda plugin: plugin.web_engine_setup(self))
 
-        if self.config.menuDisabled:
+        if self.config.menu_disabled:
             self.setContextMenuPolicy(Qt.NoContextMenu)
         else:
             self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -31,6 +31,13 @@ class QTWSWebView(QWebEngineView):
         self.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
         self.settings().setAttribute(QWebEngineSettings.JavascriptCanOpenWindows, True)
         self.settings().setAttribute(QWebEngineSettings.ScrollAnimatorEnabled, True)
+        self.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
+
+        self.profile = QWebEngineProfile.defaultProfile()
+        self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.name)
+        self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.name)
+        self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
+        QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))
 
     def __create_actions(self):
         self.__actionBack = QAction(QIcon.fromTheme("back"), "Back")

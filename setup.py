@@ -15,11 +15,11 @@ def make_desktop_file(app_src, desktop_dest):
 
     config = QTWSConfig(app_src)
 
-    script_path = "silos -a " + os.path.basename(app_src).replace(".qtws", "")
+    script_path = "silo -a " + os.path.basename(app_src).replace(".qtws", "")
 
     content = "[Desktop Entry]\n" \
               "Categories=Internet\n" \
-              "Comment=" + config.name + "\n" \
+              "Comment=" + config.description + "\n" \
               "Exec=" + script_path + "\n" \
               "GenericName=" + config.name + "\n" \
               "Icon=" + config.icon + "\n" \
@@ -48,9 +48,9 @@ package_data = {
 
 print(package_data)
 
-setuptools.setup(name='silos',
+setuptools.setup(name='silo',
                  version='0.1',
-                 scripts=["silos"],
+                 scripts=["silo"],
                  description='Standalone website wrapper',
                  url='http://github.com/intersimone999/pyqtws',
                  author='Simone Scalabrino',

@@ -302,5 +302,5 @@ class MultimediaPluginMPRIS2(Object):
             self.PropertiesChanged(self.MPRIS_PLAYER_INTERFACE, changed, [])
 
 
-def instance(config: QTWSConfig, params: list):
+def instance(config: QTWSConfig, params: dict):
     return Multimedia(config)

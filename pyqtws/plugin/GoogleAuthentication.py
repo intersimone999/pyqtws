@@ -12,11 +12,12 @@ class GoogleAuthentication(QTWSPlugin):
         url_string = url.toString()
         if url_string.startswith("https://accounts.google.com/signin") or \
                 url_string.startswith("https://accounts.google.com/AddSession") or \
-                url_string.startswith("https://accounts.google.com/ServiceLogin"):
+                url_string.startswith("https://accounts.google.com/ServiceLogin") or \
+                url_string.startswith("https://accounts.google.com/o/oauth2"):
             return True
 
         return False
 
 
-def instance(config: QTWSConfig, params: list):
+def instance(config: QTWSConfig, params: dict):
     return GoogleAuthentication()
