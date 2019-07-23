@@ -4,3 +4,7 @@
 build
 dist
 pyqtws/desktops
+other_apps/
+*.egg-info
+reinstall.sh
+
