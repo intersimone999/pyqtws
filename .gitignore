@@ -3,7 +3,7 @@
 .idea
 build
 dist
-pyqtws/desktops
+pyqtws/desktops/*.desktop
 other_apps/
 *.egg-info
 reinstall.sh
