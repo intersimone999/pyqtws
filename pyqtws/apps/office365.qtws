@@ -3,7 +3,7 @@
         "scope": ["https?:\\/\\/www\\.office\\.com\\/.*", "https?:\\/\\/.*\\.microsoftonline\\.com\\/.*", "https?:\\/\\/.*\\.sharepoint\\.com\\/.*"],
         "plugins": [],
         "home": "https://www.office.com",
-        "icon": "icons/youtube.svg",
+        "icon": "icons/office365.svg",
         "saveSession": false,
         "menu": [
             {
