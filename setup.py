@@ -33,8 +33,8 @@ def make_desktop_file(app_src, desktop_dest):
         f.write(content)
 
 
-for app in glob.glob("apps/*.qtws"):
-    app_base_name = app.replace("apps/", "").replace(".qtws", "")
+for app in glob.glob("pyqtws/apps/*.qtws"):
+    app_base_name = app.replace("pyqtws/apps/", "").replace(".qtws", "")
     desktop_file = os.path.join(HOME_PATH, "desktops/" + app_base_name + ".desktop")
     make_desktop_file(app, desktop_file)
 
@@ -45,8 +45,6 @@ package_data = {
     "pyqtws.icons": list(map(lambda f: os.path.basename(f), glob.glob(SRCDIR + "/icons/*"))),
     "pyqtws.desktops": list(map(lambda f: os.path.basename(f), glob.glob(SRCDIR + "/desktops/*")))
 }
-
-print(package_data)
 
 setuptools.setup(name='silo',
                  version='0.1',
