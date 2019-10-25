@@ -1,0 +1,35 @@
+{
+        "name": "Trenitalia",
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)trenitalia\\.com(?:\\/.*|)", "https?:\\/\\/(?:[^.]*\\.|)lefrecce\\.it(?:\\/.*|)", "https?:\\/\\/(?:[^.]*\\.|)viaggiatreno\\.it(?:\\/.*|)"],
+        "plugins": [],
+        "home": "https://www.lefrecce.it/msite/#orarioAcquisto",
+        "icon": "icons/trenitalia.png",
+        "saveSession": false,
+        "menu": [
+            {
+                "title": "Buy ticket",
+                "action": "https://www.lefrecce.it/msite/#orarioAcquisto"
+            },
+            
+            {
+                "title": "Modify ticket",
+                "action": "https://www.lefrecce.it/msite/#modificaBiglietto"
+            },
+            
+            {
+                "title": "Train status",
+                "action": "http://www.viaggiatreno.it/viaggiatrenonew/index.jsp"
+            },
+
+            {
+                "title": "Customer area",
+                "action": "https://www.lefrecce.it/msite/#areaRiservata",
+                "separator": true
+            },
+            
+            {
+                "title": "My travels",
+                "action": "https://www.lefrecce.it/msite/#viaggiAcquistati"
+            }
+        ]
+}
