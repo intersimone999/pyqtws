@@ -1,7 +1,7 @@
 # Silos
 A python re-implementation of QTWS.
 
-Silos is a QT webengine program to easily create very basic and lightweight desktop webapps. Silos now automatically integrates a set of pre-defined apps. Make a pull request to integrate more apps.
+Silos is a QT webengine program to easily create very basic and lightweight desktop webapps. Silos integrates a set of pre-defined apps. Make a pull request to integrate more apps.
 
 ## Requirements
 - qt5
@@ -24,21 +24,22 @@ Read this <html>http://blog.qt.io/blog/2016/06/03/netflix-qt-webengine-5-7/</htm
 - Run `pip install dist/*.whl`
 
 ## Run
-To run Silos you can run the shell script `silos`, specifying:
+To run a silo, you can run the shell script `silo`, specifying:
+
 - The name of the app that you want to run. The app must be in the `pyqtws/apps` folder and its name must be in lowercase;
-- The URL that you want to open; in that case, Silos will open the URL with the most suited app or the default web browser.
+- The URL that you want to open; in that case, the script will open the URL with the most suited app or the default web browser, based on its scope.
 
 Examples:
 - To open Netflix, run `python main.py -a Netflix` or `python main.py --app Netflix`
 - To open a YouTube video with a given URL, run `python main.py "https://www.youtube.com/watch?v=2MpUj-Aua48"`
 
 ## Features
-The installed Silos allows you to easily create an embedded version of an online webapp. 
-A Silos webapp features a context menu that can be activated with a right click anywhere. This menu allows to go back, to go to the home of the webapp and to reload the page.
+Silos allows you to easily create an embedded version of an online webapp. 
+A silo features a context menu that can be activated with a right click anywhere. This menu allows to go back, to go to the home of the webapp and to reload the page.
 
 Each app is completely isolated from the others: it will have its own cache, cookies and storage.
 
-To run qtws it is necessary to specify a configuration file which gives instructions about the webapp that needs to be run. This is an example for YouTube:
+To run a silo, it is necessary to specify a configuration file which gives instructions about the webapp that needs to be run. This is an example for YouTube:
 
 ```json
 {
@@ -95,9 +96,26 @@ Silos is easily extensible through plugin. A plugin must be placed in the `plugi
 
 Plugins allow to make some actions when some events happen. To see the full list of available actions, see the class `QTWSPlugin` in `plugins.py`.
 
+## License
+The following icons are from [icons8](https://icons8.com/):
+
+- Amazon
+- Amazon Prime Video
+- Google Drive
+- Google Maps
+- Google Photos
+- Google Sheets
+- Netflix
+- Office365
+- Twitch
+- WhatsApp
+- YouTube
+
+All the apps included in the basic installation are **unofficial**.
+
 ## Troubleshooting 
 If you receiving an error loading Netflix or similar webapps, try
 
 ```sh
-qtws -a appName --register-pepper-plugins="/usr/lib/qt/plugins/ppapi/libwidevinecdmadapter.so; application/x-ppapi-widevine-cdm"
+silo -a appName --register-pepper-plugins="/usr/lib/qt/plugins/ppapi/libwidevinecdmadapter.so; application/x-ppapi-widevine-cdm"
 ```
