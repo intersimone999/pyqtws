@@ -1,5 +1,5 @@
 {
-        "name": "Youtube",
+        "name": "YouTube",
         "scope": ["https?:\\/\\/(?:[^.]*\\.|)youtube\\.com(?:\\/.*|)", "https?:\\/\\/youtu\\.be(?:\\/.*|)", "https:\\/\\/accounts.google.com(?:\\/.*|)"],
         "plugins": [
             { "name" : "Multimedia" }
@@ -7,7 +7,6 @@
         "home": "http://youtube.com",
         "icon": "icons/youtube.svg",
         "saveSession": false,
-        "multimedia": true,
         "menu": [
             {
                 "title": "Trending",
