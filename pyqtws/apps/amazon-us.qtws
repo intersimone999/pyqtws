@@ -1,0 +1,27 @@
+{
+        "name": "Amazon.com",
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)amazon\\.com(?:\\/.*|)"],
+        "home": "http://amazon.com",
+        "icon": "icons/amazon.svg",
+        "saveSession": false,
+        "menu": [
+            {
+                "title": "Cart",
+                "action": "https://www.amazon.com/gp/cart/view.html?ref_=nav_cart"
+            },
+            {
+                "title": "Today's Deals",
+                "action": "https://www.amazon.com/gp/goldbox?ref_=nav_cs_gb"
+            },
+            {
+                "title": "Orders",
+                "action": "https://www.amazon.com/gp/css/order-history",
+                "separator": true
+            },
+            {
+                "title": "Account",
+                "action": "https://www.amazon.com/gp/css/homepage.html?ie=UTF8",
+                "icon": "cs-user"
+            }
+        ]
+}

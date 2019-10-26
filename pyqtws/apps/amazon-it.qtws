@@ -1,0 +1,27 @@
+{
+        "name": "Amazon.it",
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)amazon\\.it(?:\\/.*|)"],
+        "home": "http://amazon.it",
+        "icon": "icons/amazon.svg",
+        "saveSession": false,
+        "menu": [
+            {
+                "title": "Carrello",
+                "action": "https://www.amazon.it/gp/cart/view.html?ref_=nav_cart"
+            },
+            {
+                "title": "Offerte",
+                "action": "https://www.amazon.it/gp/goldbox?ref_=nav_cs_gb"
+            },
+            {
+                "title": "Ordini",
+                "action": "https://www.amazon.it/gp/css/order-history",
+                "separator": true
+            },
+            {
+                "title": "Account",
+                "action": "www.amazon.it/gp/css/homepage.html?ie=UTF8",
+                "icon": "cs-user"
+            }
+        ]
+}
