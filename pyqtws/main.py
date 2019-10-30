@@ -110,7 +110,7 @@ if __name__ == '__main__':
             app_id = "appChooser"
 
     app_chooser = None
-    if app_id.lower() == "appchooser":
+    if app_id and app_id.lower() == "appchooser":
         app_chooser = AppChooser(os.path.join(__home__, __app_folder__, "appChooser"))
         app_chooser.start_serving()
 
