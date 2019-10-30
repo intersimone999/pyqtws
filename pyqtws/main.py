@@ -115,7 +115,7 @@ if __name__ == '__main__':
         app_id = app_id.lower()
         app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
         conf = QTWSConfig(app_path)
-        if not conf.in_scope(args.url):
+        if args.url and not conf.in_scope(args.url):
             args.url = conf.home
 
         #qt_args = ["--disable-seccomp-filter-sandbox"]
