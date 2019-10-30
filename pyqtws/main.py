@@ -114,11 +114,14 @@ if __name__ == '__main__':
     if app_id:
         app_id = app_id.lower()
         app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
+        conf = QTWSConfig(app_path)
+        if not conf.in_scope(args.url):
+            args.url = conf.home
 
-        qt_args = ["--disable-seccomp-filter-sandbox"]
-        if args.plugin:
-            qt_args.append("--register-pepper-plugins=\"" + args.plugin + "\"")
+        #qt_args = ["--disable-seccomp-filter-sandbox"]
+        #if args.plugin:
+            #qt_args.append("--register-pepper-plugins=\"" + args.plugin + "\"")
 
-        app = QApplication(qt_args)
+        app = QApplication([])
         ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
         sys.exit(app.exec_())
