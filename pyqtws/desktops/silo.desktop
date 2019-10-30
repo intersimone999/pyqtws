@@ -1,0 +1,11 @@
+[Desktop Entry]
+Categories=Internet
+Comment=
+Exec=silo %u
+GenericName=Silo
+Icon=emblem-package
+MimeType=
+Name=Silo
+StartupNotify=true
+Terminal=false
+Type=Application
