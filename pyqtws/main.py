@@ -72,9 +72,12 @@ def __find_app_by_url(url: str):
     global __home__
     global __app_folder__
     
-    parsed_url = urlparse(url)    
-    if parsed_url.scheme == "silo" and parsed_url.netloc == "start":
-        return parsed_url.fragment
+    parsed_url = urlparse(url)
+    if parsed_url.scheme == "silo":
+        if parsed_url.netloc == "start":
+            return parsed_url.fragment
+        elif parsed_url.netloc == "choose":
+            return "appChooser"
 
     for app_config in glob.iglob(os.path.join(__home__, __app_folder__, '*.qtws')):
         conf = QTWSConfig(app_config)
@@ -100,14 +103,14 @@ if __name__ == '__main__':
     if not app_id:
         if args.url:
             app_id = __find_app_by_url(args.url)
-            if not app_id:
+            if not app_id and urlparse(args.url).scheme != "silo":
                 webbrowser.open(args.url)
                 sys.exit(0)
         else:
             app_id = "appChooser"
 
     app_chooser = None
-    if app_id == "appChooser":
+    if app_id.lower() == "appchooser":
         app_chooser = AppChooser(os.path.join(__home__, __app_folder__, "appChooser"))
         app_chooser.start_serving()
 
@@ -125,3 +128,6 @@ if __name__ == '__main__':
         app = QApplication([])
         ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
         sys.exit(app.exec_())
+    else:
+        print("Invalid silo command")
+        sys.exit(-1)
