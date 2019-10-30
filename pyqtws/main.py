@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QApplication
 from mainwindow import QTWSMainWindow
 from config import *
 from appchooser import AppChooser
+from urllib.parse import urlparse
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
 __app_folder__ = "apps"
@@ -70,6 +71,10 @@ def __install_service(fname: str):
 def __find_app_by_url(url: str):
     global __home__
     global __app_folder__
+    
+    parsed_url = urlparse(url)    
+    if parsed_url.scheme == "silo" and parsed_url.netloc == "start":
+        return parsed_url.fragment
 
     for app_config in glob.iglob(os.path.join(__home__, __app_folder__, '*.qtws')):
         conf = QTWSConfig(app_config)
