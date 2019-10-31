@@ -40,8 +40,10 @@ class QTWSMainWindow(QWidget):
     def __init_ui(self, url: str = None):
         self.setWindowTitle(self.config.name)
 
-        if not url:
+        if not url or not self.config.in_scope(url):
             url = self.config.home
+            
+        url = url.replace('silo://', 'https://')
 
         self.web = QTWSWebView(self.config)
         self.web.load(QUrl(url))

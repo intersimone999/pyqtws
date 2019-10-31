@@ -146,6 +146,9 @@ class QTWSConfig:
     def in_scope(self, url):
         if type(url) == QUrl:
             url = url.toString()
+        
+        # Always support silo as URL schema
+        url = url.replace('silo://', 'https://')
 
         for scope in self.scope:
             if re.search(scope, url):

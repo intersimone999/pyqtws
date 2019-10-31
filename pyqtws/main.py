@@ -78,8 +78,6 @@ def __find_app_by_url(url: str):
             return parsed_url.fragment
         elif parsed_url.netloc == "choose":
             return "appChooser"
-        else:
-            url = url.replace('silo://', 'https://')
 
     for app_config in glob.iglob(os.path.join(__home__, __app_folder__, '*.qtws')):
         conf = QTWSConfig(app_config)
@@ -120,8 +118,6 @@ if __name__ == '__main__':
         app_id = app_id.lower()
         app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
         conf = QTWSConfig(app_path)
-        if args.url and not conf.in_scope(args.url):
-            args.url = conf.home
 
         #qt_args = ["--disable-seccomp-filter-sandbox"]
         #if args.plugin:
