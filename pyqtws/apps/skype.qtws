@@ -6,6 +6,5 @@
         "icon": "icons/skype.svg",
         "saveSession": true,
         "menuDisabled": false,
-        "alwaysOnTop": true,
         "download": true
 }
