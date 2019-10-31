@@ -42,6 +42,9 @@ class QTWSMainWindow(QWidget):
 
         if not url or not self.config.in_scope(url):
             url = self.config.home
+        
+        if type(url) == QUrl:
+            url = url.toString()
             
         url = url.replace('silo://', 'https://')
 
