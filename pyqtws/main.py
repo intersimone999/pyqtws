@@ -78,6 +78,8 @@ def __find_app_by_url(url: str):
             return parsed_url.fragment
         elif parsed_url.netloc == "choose":
             return "appChooser"
+        else:
+            url = url.replace('silo://', 'https://')
 
     for app_config in glob.iglob(os.path.join(__home__, __app_folder__, '*.qtws')):
         conf = QTWSConfig(app_config)
