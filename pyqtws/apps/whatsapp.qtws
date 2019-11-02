@@ -4,7 +4,10 @@
         "plugins": [{
             "name": "ChangeUserAgent",
             "user-agent": "chrome"
-        }],
+        }, {
+            "name": "Notifications"
+        }
+        ],
         "home": "https://web.whatsapp.com/",
         "icon": "icons/whatsapp.svg",
         "saveSession": true,
