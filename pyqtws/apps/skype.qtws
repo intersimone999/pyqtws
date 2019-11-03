@@ -1,7 +1,11 @@
 {
         "name": "Skype",
         "scope": ["https\\:\\/\\/.*\\.skype\\.com", "https\\:\\/\\/login\\.live\\.com\\/login.*"],
-        "plugins": [],
+        "plugins": [
+            {"name": "WebRTC"},
+            {"name": "Notifications"},
+            {"name": "ChangeUserAgent", "user-agent": "chrome"}
+        ],
         "home": "http://web.skype.com/",
         "icon": "icons/skype.svg",
         "saveSession": true,
