@@ -117,13 +117,13 @@ if __name__ == '__main__':
     if app_id:
         app_id = app_id.lower()
         app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
-        conf = QTWSConfig(app_path)
+        config = QTWSConfig(app_path)
 
         #qt_args = ["--disable-seccomp-filter-sandbox"]
         #if args.plugin:
             #qt_args.append("--register-pepper-plugins=\"" + args.plugin + "\"")
 
-        app = QApplication([])
+        app = QApplication(["silos"])
         ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
         sys.exit(app.exec_())
     else:
