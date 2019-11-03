@@ -1,6 +1,6 @@
 {
         "name": "Google Travel",
-        "scope": ["https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/travel\\/(?:\\/.*|)","https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/flights\\/(?:\\/.*|)", "https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/local\\/(?:\\/.*|)"],
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/(?:travel|flights|local|destination)\\/(?:\\/.*|)"],
         "home": "https://www.google.com/flights",
         "icon": "icons/google-travel.svg",
         "saveSession": false,
