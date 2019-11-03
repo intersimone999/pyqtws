@@ -1,6 +1,3 @@
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QMenu
 from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
 
 from mainwindow import QTWSMainWindow
@@ -8,21 +5,13 @@ from plugins import QTWSPlugin
 from web import QTWSWebView
 from config import QTWSConfig
 
-import main
-
-import random
-import time
-import dbus
-import dbus.mainloop.glib
 import tempfile
 import os
 
 import platform
 
 
-class Notifications(QTWSPlugin):
-    profile     = None
-    
+class Notifications(QTWSPlugin):    
     def __init__(self, config: QTWSConfig):
         super().__init__("Notifications")
         
