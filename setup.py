@@ -56,7 +56,7 @@ setuptools.setup(name='silo',
                  license='MIT',
                  packages=setuptools.find_packages(),
                  install_requires=[
-                     'PyQt5', 'PyQtWebEngine', 'dbus-python', 'pygi'
+                     'PyQt5', 'PyQtWebEngine', 'dbus-python', 'pygi', 'pystray'
                  ],
                  package_data=package_data,
                  zip_safe=False)

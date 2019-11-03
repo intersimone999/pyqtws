@@ -36,6 +36,9 @@ class QTWSMainWindow(QWidget):
             self.app_chooser.stop_serving()
 
         super().closeEvent(event)
+        
+    def quit(self):
+        self.__action_quit()
 
     def __init_ui(self, url: str = None):
         self.setWindowTitle(self.config.name)
