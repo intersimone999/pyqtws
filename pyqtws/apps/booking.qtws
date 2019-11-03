@@ -1,0 +1,41 @@
+{
+        "name": "Booking.com",
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)booking\\.com(?:\\/.*|)"],
+        "home": "http://www.booking.com",
+        "icon": "icons/booking.svg",
+        "saveSession": false,
+        "plugins": [
+            {"name": "GoogleAuthentication"}
+        ],
+        "menu": [
+            {
+                "title": "My dashboard",
+                "action": "https://secure.booking.com/mydashboard.html"
+            },
+            {
+                "title": "My reservations",
+                "action": "https://secure.booking.com/myreservations.html"
+            },
+            {
+                "title": "Hotels",
+                "action": "https://www.booking.com/hotel.html",
+                "separator": true
+            },
+            {
+                "title": "Apartments",
+                "action": "https://www.booking.com/apartments/index.html"
+            },
+            {
+                "title": "Hostels",
+                "action": "https://www.booking.com/hostels/index.html"
+            },
+            {
+                "title": "Guest Houses",
+                "action": "https://www.booking.com/guest-house/index.html"
+            },
+            {
+                "title": "Resorts",
+                "action": "https://www.booking.com/resorts/index.html"
+            }
+        ]
+}
