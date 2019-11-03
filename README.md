@@ -114,8 +114,4 @@ The following icons are from [icons8](https://icons8.com/):
 All the apps included in the basic installation are **unofficial**.
 
 ## Troubleshooting 
-If you receiving an error loading Netflix or similar webapps, try
-
-```sh
-silo -a appName --register-pepper-plugins="/usr/lib/qt/plugins/ppapi/libwidevinecdmadapter.so; application/x-ppapi-widevine-cdm"
-```
+If you receiving an error for Netflix or similar webapps, you need to install widevine (e.g., the AUR chromium-widevine in Arch Linux).
