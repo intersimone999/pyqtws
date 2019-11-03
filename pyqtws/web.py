@@ -143,8 +143,7 @@ class QTWSWebPage(QWebEnginePage):
             return True
 
         if not self.__check_in_scope(url):
-            print("Going outside because of " + url.toString())
-            webbrowser.open(url.toString())
+            self.__open_outside_url(url)
             return False
         else:
             return True
@@ -152,12 +151,16 @@ class QTWSWebPage(QWebEnginePage):
     def __create_window_request(self, fake_page: QWebEnginePage, url: QUrl):
         if not self.__check_in_scope(url):
             if url.scheme != 'about' and url.scheme != "":
-                print("Going outside because of " + url.toString())
-                webbrowser.open(url.toString())
+                self.__open_outside_url(url)
                 return False
         else:
             self.setUrl(url)
             return False
+        
+    def __open_outside_url(self, url):
+        silo_url = url.toString().replace("https://", "silo://").replace("http://", "silo://")
+        print("Going outside because of {}: redirecting to {}".format(url.toString(), silo_url))
+        webbrowser.open(silo_url)
 
     def __check__blacklisted(self, url: QUrl):
         for plugin in QTWSPluginManager.instance().plugins:
