@@ -8,6 +8,7 @@ from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView, QWebEngineS
 
 from config import QTWSConfig
 from plugins import QTWSPluginManager
+from permissions import QTWSPermissionManager
 
 
 class QTWSWebView(QWebEngineView):
@@ -16,6 +17,9 @@ class QTWSWebView(QWebEngineView):
         self.config = config
         self.webPage = QTWSWebPage(self.config)
         self.setPage(self.webPage)
+        
+        self.permission_manager = QTWSPermissionManager(self.webPage)
+        
         QTWSPluginManager.instance().each(lambda plugin: plugin.web_engine_setup(self))
 
         if self.config.menu_disabled:
@@ -37,7 +41,11 @@ class QTWSWebView(QWebEngineView):
         self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.name)
         self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.name)
         self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
+        
         QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))
+        
+    def grant_permission(self, permission):
+        self.permission_manager.grant_permission(permission)
 
     def __create_actions(self):
         self.__actionBack = QAction(QIcon.fromTheme("back"), "Back")
