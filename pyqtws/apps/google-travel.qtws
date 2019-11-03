@@ -2,7 +2,7 @@
         "name": "Google Travel",
         "scope": ["https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/travel\\/(?:\\/.*|)","https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/flights\\/(?:\\/.*|)", "https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/local\\/(?:\\/.*|)"],
         "home": "https://www.google.com/flights",
-        "icon": "icons/google-flights.svg",
+        "icon": "icons/google-travel.svg",
         "saveSession": false,
         "plugins": [
             {"name": "GoogleAuthentication"}
