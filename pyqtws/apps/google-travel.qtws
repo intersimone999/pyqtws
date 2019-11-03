@@ -1,0 +1,24 @@
+{
+        "name": "Google Travel",
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/travel\\/(?:\\/.*|)","https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/flights\\/(?:\\/.*|)", "https?:\\/\\/(?:[^.]*\\.|)google\\.com\\/local\\/(?:\\/.*|)"],
+        "home": "https://www.google.com/flights",
+        "icon": "icons/google-flights.svg",
+        "saveSession": false,
+        "plugins": [
+            {"name": "GoogleAuthentication"}
+        ],
+        "menu": [
+            {
+                "title": "Flights",
+                "action": "https://www.google.com/travel/flights"
+            },
+            {
+                "title": "Explore",
+                "action": "https://www.google.com/travel/?mode=guide"
+            },
+            {
+                "title": "Hotels",
+                "action": "https://search.google.com/local/places/hotel"
+            }
+        ]
+}
