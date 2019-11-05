@@ -103,8 +103,9 @@ if __name__ == '__main__':
     if not app_id:
         if args.url:
             app_id = __find_app_by_url(args.url)
-            if not app_id and urlparse(args.url).scheme != "silo":
-                webbrowser.open(args.url)
+            if not app_id:
+                url = args.url.replace("silo://", "https://")
+                webbrowser.open(url)
                 sys.exit(0)
         else:
             app_id = "appChooser"
@@ -118,10 +119,6 @@ if __name__ == '__main__':
         app_id = app_id.lower()
         app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
         config = QTWSConfig(app_path)
-
-        #qt_args = ["--disable-seccomp-filter-sandbox"]
-        #if args.plugin:
-            #qt_args.append("--register-pepper-plugins=\"" + args.plugin + "\"")
 
         app = QApplication(["silos"])
         ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
