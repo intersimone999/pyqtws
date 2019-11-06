@@ -1,0 +1,11 @@
+{
+        "name": "Google Documents",
+        "scope": ["https?\\:\\/\\/docs\\.google\\.com\\/document(?:\\/.*|)"],
+        "plugins": [
+            { "name": "GoogleAuthentication" }
+        ],
+        "home": "http://docs.google.com/document",
+        "icon": "icons/google-documents.svg",
+        "saveSession": false,
+        "download": true
+}
