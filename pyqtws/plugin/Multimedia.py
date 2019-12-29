@@ -76,6 +76,7 @@ class Multimedia(QTWSPlugin):
         self.__web_thread.start()
 
     def __update_playback_status(self):
+        time.sleep(5)
         while self.window.isVisible():
             time.sleep(1)
             self.__mpris2.refresh_properties()
@@ -287,6 +288,8 @@ class MultimediaPluginMPRIS2(Object):
     def __set_position(self, position):
         if position:
             self.Set(self.MPRIS_PLAYER_INTERFACE, "Position", dbus.Int64(position * 1000 * 1000))
+            
+        print(self.properties[self.MPRIS_PLAYER_INTERFACE]["Position"])
 
     def __set_rate(self, rate):
         if rate:
