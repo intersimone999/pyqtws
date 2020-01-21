@@ -1,0 +1,13 @@
+{
+        "name": "Trello",
+        "scope": ["https?:\\/\\/(?:[^.]*\\.|)trello\\.com(?:\\/.*|)"],
+        "home": "https://trello.com",
+        "plugins": [
+            {
+                "name": "GoogleAuthentication"
+            }
+        ],
+        "icon": "icons/trello.svg",
+        "saveSession": false,
+        "menu": []
+}
