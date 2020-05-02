@@ -1,10 +1,11 @@
 {
         "name": "Telegram Web",
         "scope": ["https?\\:\\/\\/web\\.telegram\\.org(?:\\/.*|)"],
-        "plugins": [{
-            "name": "ChangeUserAgent",
-            "user-agent": "chrome"
-        }],
+        "plugins": [
+            { "name": "ChangeUserAgent", "user-agent": "chrome" }, 
+            { "name": "Notifications" },
+            { "name": "TrayIcon" }
+        ],
         "home": "https://web.telegram.org/",
         "icon": "icons/telegram.svg",
         "saveSession": true,
