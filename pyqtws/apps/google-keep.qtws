@@ -1,0 +1,31 @@
+{
+        "name": "Google Keep",
+        "scope": ["https?\\:\\/\\/keep\\.google\\.com(?:\\/.*|)"],
+        "plugins": [
+            { "name": "GoogleAuthentication" }
+        ],
+        "home": "https://keep.google.com/",
+        "icon": "icons/google-keep.svg",
+        "saveSession": false,
+        "menu": [
+            {
+                "title": "Notes",
+                "action": "https://keep.google.com/u/0/#home"
+            },
+            
+            {
+                "title": "Reminders",
+                "action": "https://keep.google.com/u/0/#reminders"
+            },
+            
+            {
+                "title": "Archive",
+                "action": "https://keep.google.com/u/0/#archive"
+            },
+            
+            {
+                "title": "Bin",
+                "action": "https://keep.google.com/u/0/#trash"
+            }
+        ]
+}
