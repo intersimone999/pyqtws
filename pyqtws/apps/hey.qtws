@@ -1,0 +1,49 @@
+{
+        "name": "Hey",
+        "scope": ["https?\\:\\/\\/.*\\.hey\\.com(?:\\/.*|)"],
+        "plugins": [
+            { "name": "Notifications" },
+            { "name": "TrayIcon" }
+        ],
+        "home": "https://app.hey.com/",
+        "icon": "icons/hey.svg",
+        "saveSession": true,
+        "menu": [
+            {
+                "title": "Imbox",
+                "action": "https://app.hey.com/",
+                "icon": "mail-folder-inbox"
+            },
+            {
+                "title": "The Feed",
+                "action": "https://app.hey.com/feedbox",
+                "icon": "view-list"
+            },
+            {
+                "title": "Paper Trail",
+                "action": "https://app.hey.com/paper_trail",
+                "icon": "document-duplicate"
+            },
+            {
+                "title": "Reply Later",
+                "action": "https://app.hey.com/reply_later",
+                "icon": "mail-queue"
+            },
+            {
+                "title": "Set Aside",
+                "action": "https://app.hey.com/set_aside",
+                "icon": "pin"
+            },
+            {
+                "title": "All Files",
+                "action": "https://app.hey.com/attachments",
+                "icon": "fileview-preview"
+            },
+            {
+                "title": "Everything",
+                "action": "https://app.hey.com/topics/everything",
+                "icon": "mail-message",
+                "separator": true
+            }
+        ]
+}
