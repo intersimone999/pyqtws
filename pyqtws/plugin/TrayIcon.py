@@ -1,6 +1,6 @@
 from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
 
-from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QImage, QCloseEvent
 
 from mainwindow import QTWSMainWindow
 from plugins import QTWSPlugin
@@ -27,8 +27,8 @@ class TrayIcon(QTWSPlugin):
         
         self.menu = pystray.Menu(
             pystray.MenuItem(
-                "Visible", 
-                checked=lambda x: self.__check_visible(),
+                "Toggle visibility", 
+                #checked=lambda x: self.__check_visible(),
                 default=True, 
                 action=lambda: self.__toggle_visibility()
             ),
@@ -49,6 +49,10 @@ class TrayIcon(QTWSPlugin):
         
         self.icon_thread = Thread(target=self.__run_thread)
         self.icon_thread.start()
+        
+    def close_event(self, window: QTWSMainWindow, event: QCloseEvent):
+        self.__toggle_visibility()
+        event.ignore()
 
     def window_setup(self, window: QTWSMainWindow):
         self.window = window

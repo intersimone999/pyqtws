@@ -29,6 +29,9 @@ class QTWSPlugin:
 
     def is_url_whitelisted(self, url: QUrl):
         return False
+    
+    def close_event(self, window, event):
+        pass
 
 
 class QTWSPluginManager:

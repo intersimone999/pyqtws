@@ -35,7 +35,7 @@ class QTWSMainWindow(QWidget):
         if self.app_chooser:
             self.app_chooser.stop_serving()
 
-        super().closeEvent(event)
+        QTWSPluginManager.instance().each(lambda plugin: plugin.close_event(self, event))
         
     def quit(self):
         self.__action_quit()
