@@ -111,6 +111,7 @@ The following icons are from [icons8](https://icons8.com/):
 - WhatsApp
 - YouTube
 
+The icon for "hey.com" is from the official website..
 All the apps included in the basic installation are **unofficial**.
 
 ## Troubleshooting 
