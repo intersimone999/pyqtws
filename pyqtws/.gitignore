@@ -1,3 +1,6 @@
-apps
+apps/*
+!apps/appchooser.qtws
+!apps/appChooser
+!apps/test-*.qtws
 icons
 desktops

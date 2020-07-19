@@ -1,0 +1,12 @@
+{
+        "name": "YouTube",
+        "scope": ["https://www.bennish.net/web-notifications.html"],
+        "plugins": [
+            { "name" : "Notifications" }
+        ],
+        "home": "https://www.bennish.net/web-notifications.html",
+        "icon": "icons/youtube.svg",
+        "saveSession": false,
+        "menu": [
+        ]
+}

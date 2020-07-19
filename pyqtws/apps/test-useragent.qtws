@@ -1,0 +1,12 @@
+{
+        "name": "YouTube",
+        "scope": ["https://wtools.io/check-my-user-agent"],
+        "plugins": [
+            { "name": "ChangeUserAgent", "user-agent": "firefox" }
+        ],
+        "home": "https://wtools.io/check-my-user-agent",
+        "icon": "icons/youtube.svg",
+        "saveSession": false,
+        "menu": [
+        ]
+}

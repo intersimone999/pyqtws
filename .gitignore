@@ -4,9 +4,9 @@
 build
 dist
 pyqtws/desktops/*.desktop
-pyqtws/apps/test-*.qtws
 other_apps/
 *.egg-info
 reinstall.sh
 apps
+!pyqtws/apps
 update-upstream.rb
