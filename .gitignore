@@ -8,4 +8,5 @@ pyqtws/apps/test-*.qtws
 other_apps/
 *.egg-info
 reinstall.sh
-
+apps
+update-upstream.rb
