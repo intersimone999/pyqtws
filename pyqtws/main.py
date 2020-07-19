@@ -21,6 +21,11 @@ def warn(message: str):
     print(message, file=sys.stderr)
 
 
+def __app_path():
+    print(os.path.realpath(__file__).replace(__file__, "") + "apps")
+    return 0
+
+
 def __install_service(fname: str):
     app_id = os.path.basename(fname).replace(".qtws", "")
 
@@ -92,6 +97,7 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--app', help='opens the specified app', required=False)
     parser.add_argument('-p', '--plugin', help='QT plugins to enable', required=False)
     parser.add_argument('-i', '--install', help='install the specified file', required=False)
+    parser.add_argument('-A', '--path', help='prints the path to the app folder in the local system', action='store_const', required=False, const='c')
     parser.add_argument('url', help='opens the specified URL with the correct app', nargs='?')
 
     args = parser.parse_args()
@@ -99,6 +105,9 @@ if __name__ == '__main__':
     
     if args.install:
         sys.exit(__install_service(args.install))
+        
+    if args.path:
+        sys.exit(__app_path())
 
     if not app_id:
         if args.url:
