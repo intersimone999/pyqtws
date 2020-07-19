@@ -1,9 +1,0 @@
-{
-        "name": "QTWS",
-        "scope": ["http:\//\//localhost:9000\\/"],
-        "plugins": [],
-        "home": "http://localhost:9000",
-        "icon": "",
-        "saveSession": false,
-        "menuDisabled": true
-}
