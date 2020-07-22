@@ -1,4 +1,5 @@
 import webbrowser
+import subprocess
 
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QPoint, QUrl
@@ -160,7 +161,7 @@ class QTWSWebPage(QWebEnginePage):
     def __open_outside_url(self, url):
         silo_url = url.toString().replace("https://", "silo://").replace("http://", "silo://")
         print("Going outside because of {}: redirecting to {}".format(url.toString(), silo_url))
-        webbrowser.open(silo_url)
+        subprocess.Popen(['silo', silo_url], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
     def __check__blacklisted(self, url: QUrl):
         for plugin in QTWSPluginManager.instance().plugins:
