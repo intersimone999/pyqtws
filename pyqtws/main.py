@@ -95,6 +95,7 @@ def __find_app_by_url(url: str):
 if __name__ == '__main__':
     parser = ArgumentParser(description='The new web.')
     parser.add_argument('-a', '--app', help='opens the specified app', required=False)
+    parser.add_argument('-f', '--appfile', help='opens the specified app file', required=False)
     parser.add_argument('-p', '--plugin', help='QT plugins to enable', required=False)
     parser.add_argument('-i', '--install', help='install the specified file', required=False)
     parser.add_argument('-A', '--path', help='prints the path to the app folder in the local system', action='store_const', required=False, const='c')
@@ -126,12 +127,18 @@ if __name__ == '__main__':
 
     if app_id:
         app_id = app_id.lower()
-        app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
+        app_path = None
+        if args.appfile:
+            app_path = args.appfile
+        else:
+            app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
+            
         config = QTWSConfig(app_path)
 
         app = QApplication(["silos"])
         ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
         sys.exit(app.exec_())
+
     else:
         print("Invalid silo command")
         sys.exit(-1)
