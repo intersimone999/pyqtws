@@ -39,6 +39,7 @@ class QTWSWebView(QWebEngineView):
         self.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
 
         self.profile = QWebEngineProfile.defaultProfile()
+        self.profile.downloadRequested.connect(lambda item: self.__download(item))
         self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.name)
         self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.name)
         self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
@@ -108,6 +109,11 @@ class QTWSWebView(QWebEngineView):
         # Handles all the custom actions using the URL stored in the action's data field
         self.menu.triggered.connect(self.__menu_click)
         self.menu.popup(self.mapToGlobal(position))
+        
+    def __download(item):
+        url = item.url().toString()
+        webbrowser.open(url)
+        item.cancel()
 
     def __share(self):
         QApplication.instance().clipboard().setText(self.url().toString())
