@@ -110,7 +110,7 @@ class QTWSWebView(QWebEngineView):
         self.menu.triggered.connect(self.__menu_click)
         self.menu.popup(self.mapToGlobal(position))
         
-    def __download(item):
+    def __download(self, item):
         url = item.url().toString()
         webbrowser.open(url)
         item.cancel()
