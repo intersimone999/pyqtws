@@ -65,21 +65,30 @@ class Notifier:
         
 class LinuxNotifier:
     def __init__(self, app_name):
-        from gi.repository import Notify
-        Notify.init(app_name)
+        try:
+            import gi
+            gi.require_version('Notify', '0.7')
+            
+            from gi.repository import Notify
+            Notify.init(app_name)
+            self.notifications_enabled = True
+        except ImportError:
+            print("Notifications not enabled because the gi package is probably not available.")
+            self.notifications_enabled = False
     
     def show(self, notification, image_file):
-        from gi.repository import Notify
-        from gi.repository import GdkPixbuf
-        
-        image = GdkPixbuf.Pixbuf.new_from_file(image_file)
+        if self.notifications_enabled:
+            from gi.repository import Notify
+            from gi.repository import GdkPixbuf
+            
+            image = GdkPixbuf.Pixbuf.new_from_file(image_file)
 
-        notify = Notify.Notification.new(notification.title(), notification.message())
-        notify.set_icon_from_pixbuf(image)
-        notify.set_image_from_pixbuf(image)
-        notify.set_urgency(1)
-        
-        notify.show()
+            notify = Notify.Notification.new(notification.title(), notification.message())
+            notify.set_icon_from_pixbuf(image)
+            notify.set_image_from_pixbuf(image)
+            notify.set_urgency(1)
+            
+            notify.show()
     
 class WindowsNotifier:
     def __init__(self, app_name):
