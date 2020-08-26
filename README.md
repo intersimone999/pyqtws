@@ -1,7 +1,7 @@
 # Silos
 A python re-implementation of QTWS.
 
-Silos is a QT webengine program to easily create very basic and lightweight desktop webapps. Silos integrates a set of pre-defined apps. Make a pull request to integrate more apps.
+Silos is a QT webengine program to easily create very basic and lightweight desktop webapps. Silos integrates a set of pre-defined apps. Make a pull request at https://github.com/intersimone999/silos-apps to integrate more apps.
 
 ## Requirements
 - qt5
