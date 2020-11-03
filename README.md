@@ -1,3 +1,6 @@
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=intersimone999_pyqtws&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=intersimone999_pyqtws)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=intersimone999_pyqtws&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=intersimone999_pyqtws)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=intersimone999_pyqtws&metric=bugs)](https://sonarcloud.io/dashboard?id=intersimone999_pyqtws)
 # Silos
 A python re-implementation of QTWS.
 
