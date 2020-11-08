@@ -22,7 +22,7 @@ def make_desktop_file(app_src, desktop_dest):
               "Comment=" + config.description + "\n" \
               "Exec=" + script_path + "\n" \
               "GenericName=" + config.name + "\n" \
-              "Icon=silo-" + os.path.basename(config.icon) + "\n" \
+              "Icon=silo-" + os.path.splitext(os.path.basename(config.icon))[0] + "\n" \
               "MimeType=\n" \
               "Name=" + config.name + "\n" \
               "Path=\n" \
