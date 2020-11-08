@@ -24,7 +24,6 @@ class EnterEventHandler(QObject):
         
     def eventFilter(self, obj, event):
         if type(event) is QEnterEvent:
-            print(str((obj, event)))
             if self.callback is not None:
                 self.callback(event)
             return True
@@ -189,6 +188,8 @@ class QTWSMainWindow(QWidget):
         self.__keyAltLeft = QShortcut(self)
         self.__keyAltLeft.setKey(Qt.ALT + Qt.Key_Left)
         self.__keyAltLeft.activated.connect(self.__action_back)
+        
+        QTWSPluginManager.instance().each(lambda plugin: plugin.register_shortcuts(self))
 
     def __action_back(self):
         self.web.back()

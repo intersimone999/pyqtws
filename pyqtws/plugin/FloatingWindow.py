@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
+from PyQt5.Qt import QShortcut, Qt
 from PyQt5.QtWidgets import QAction, QMenu, QApplication, QMessageBox
 
 from mainwindow import QTWSMainWindow
@@ -18,6 +19,11 @@ class FloatingWindow(QTWSPlugin):
         
     def window_setup(self, window: QTWSMainWindow):
         self.window = window
+        
+    def register_shortcuts(self, window):
+        self.__keyCtrlF = QShortcut(window)
+        self.__keyCtrlF.setKey(Qt.CTRL + Qt.Key_F)
+        self.__keyCtrlF.activated.connect(lambda: self.__activate_floating())
 
     def add_menu_items(self, menu: QMenu):
         self.floating_toggle = None
@@ -47,13 +53,7 @@ class FloatingWindow(QTWSPlugin):
         
         self.previously_maximized  = self.window.isMaximized()
         self.previously_fullscreen = self.window.isFullScreen()
-        
-        #if self.previously_fullscreen:
-            #self.window.deactivate_fullscreen()
-            
-        #if self.previously_maximized:
-            #self.window.showNormal()            
-        
+                
         self.window.set_always_on_top(True)
         self.window.setMaximumWidth(self.screen.width() / 2)
         self.window.setMaximumHeight(self.screen.height() / 2)

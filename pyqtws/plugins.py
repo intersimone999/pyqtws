@@ -32,6 +32,9 @@ class QTWSPlugin:
     
     def close_event(self, window, event):
         pass
+    
+    def register_shortcuts(self, window):
+        pass
 
 
 class QTWSPluginManager:
