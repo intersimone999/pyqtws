@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt5.QtCore import QSettings
-from PyQt5.Qt import QShortcut, Qt
-from PyQt5.QtGui import QIcon, QCloseEvent
+from PyQt5.Qt import QShortcut, Qt, QObject
+from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
 from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
 
 from appchooser import AppChooser
@@ -12,6 +12,24 @@ from plugins import QTWSPluginManager
 import os
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
+
+
+class EnterEventHandler(QObject):
+    def __init__(self):
+        super().__init__()
+        self.set_callback(None)
+        
+    def set_callback(self, callback):
+        self.callback = callback
+        
+    def eventFilter(self, obj, event):
+        if type(event) is QEnterEvent:
+            print(str((obj, event)))
+            if self.callback is not None:
+                self.callback(event)
+            return True
+        else:
+            return False
 
 
 class QTWSMainWindow(QWidget):
@@ -27,6 +45,11 @@ class QTWSMainWindow(QWidget):
         self.__init_web_view()
         self.__read_settings()
         self.__init_shortcuts()
+        
+        self.enter_event_handler = EnterEventHandler()
+        self.setMouseTracking(True)
+        self.installEventFilter(self.enter_event_handler)
+        self.default_flags = self.windowFlags()
 
         QTWSPluginManager.instance().each(lambda plugin: plugin.window_setup(self))
 
@@ -39,6 +62,35 @@ class QTWSMainWindow(QWidget):
         
     def quit(self):
         self.__action_quit()
+        
+    def set_always_on_top(self, always_on_top: bool):
+        self.setWindowFlag(Qt.WindowStaysOnTopHint, always_on_top)
+        self.show()
+    
+    def set_maximizable(self, maximizable: bool):
+        self.setWindowFlag(Qt.WindowMaximizeButtonHint, maximizable)
+        self.show()
+        
+    def reset_flags(self):
+        self.setWindowFlags(self.default_flags)
+        self.show()
+        
+    def activate_fullscreen(self):
+        if not self.isFullScreen():
+            self.maximized = self.isMaximized()
+            self.showFullScreen()
+            
+    def deactivate_fullscreen(self):
+        if self.isFullScreen():
+            self.web.triggerPageAction(QTWSWebPage.ExitFullScreen)
+            if self.maximized:
+                self.showNormal()
+                self.showMaximized()
+            else:
+                self.showNormal()
+    
+    def set_mouse_enter_callback(self, callback):
+        self.enter_event_handler.set_callback(callback)
 
     def __init_ui(self, url: str = None):
         self.setWindowTitle(self.config.name)
@@ -51,7 +103,7 @@ class QTWSMainWindow(QWidget):
             
         url = url.replace('silo://', 'https://')
 
-        self.web = QTWSWebView(self.config)
+        self.web = QTWSWebView(self.config, self)
         self.web.load(QUrl(url))
 
         layout = QVBoxLayout()
@@ -63,6 +115,8 @@ class QTWSMainWindow(QWidget):
         self.setWindowIcon(QIcon(os.path.join(__home__, self.config.icon)))
         self.show()
 
+        self.maximized = self.isMaximized()
+
     def __init_web_view(self):
         profile = QWebEngineProfile.defaultProfile()
 
@@ -73,7 +127,7 @@ class QTWSMainWindow(QWidget):
         self.web.page().fullScreenRequested.connect(self.__full_screen_requested)
 
         if self.config.always_on_top:
-            self.setWindowFlags(Qt.WindowStaysOnTopHint)
+            self.set_always_on_top(True)
 
     def __full_screen_requested(self, request: QWebEngineFullScreenRequest):
         if request.toggleOn():
@@ -141,15 +195,9 @@ class QTWSMainWindow(QWidget):
 
     def __action_full_screen(self):
         if not self.isFullScreen():
-            self.maximized = self.isMaximized()
-            self.showFullScreen()
+            self.activate_fullscreen()
         else:
-            self.web.triggerPageAction(QTWSWebPage.ExitFullScreen)
-            if self.maximized:
-                self.showNormal()
-                self.showMaximized()
-            else:
-                self.showNormal()
+            self.deactivate_fullscreen()
 
     def __action_home(self):
         self.web.setUrl(self.config.home)

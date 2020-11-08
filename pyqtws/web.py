@@ -13,9 +13,10 @@ from permissions import QTWSPermissionManager
 
 
 class QTWSWebView(QWebEngineView):
-    def __init__(self, config):
+    def __init__(self, config: QTWSConfig, window):
         super().__init__()
         self.config = config
+        self.window = window
         self.webPage = QTWSWebPage(self.config)
         self.setPage(self.webPage)
         
@@ -120,8 +121,7 @@ class QTWSWebView(QWebEngineView):
         QMessageBox().information(self, 'Shared', 'Copied to the clipboard', QMessageBox.Ok)
 
     def __quit(self):
-        # TODO write settings
-        QApplication.quit()
+        self.window.quit()
 
     def __menu_click(self, action: QAction):
         if action.data():
