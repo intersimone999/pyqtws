@@ -7,7 +7,6 @@ from config import QTWSConfig
 
 import tempfile
 import os
-
 import platform
 
 
@@ -27,6 +26,7 @@ class Notifications(QTWSPlugin):
     def web_profile_setup(self, profile: QWebEngineProfile):
         Notifier.set_profile(profile)
 
+
 class Notifier:
     notifier = None
     profile = None
@@ -39,7 +39,7 @@ class Notifier:
                 Notifier.notifier = WindowsNotifier(app_name)
             else:
                 Notifier.notifier = FallbackNotifier(app_name)
-                
+            
         except ImportError:
             print("Your system ({}) is supported, but you miss the required python libraries.".format(platform.system()))
             Notifier.notifier = FallbackNotifier(app_name)
@@ -50,9 +50,9 @@ class Notifier:
             
     def notify(notification):
         Notifier.profile.setNotificationPresenter(Notifier.notify)
-        Notifier.show(notification)
+        Notifier.show_notification(notification)
         
-    def show(notification):
+    def show_notification(notification):
         notification.show()
         image_file = tempfile.NamedTemporaryFile(suffix=".png").name
         notification.icon().save(image_file)
@@ -61,9 +61,14 @@ class Notifier:
         
         notification.close()
         os.remove(image_file)
-                
-        
-class LinuxNotifier:
+
+
+class BasicNotifier:
+    def show(self, notification, image_file):
+        pass
+    
+
+class LinuxNotifier(BasicNotifier):
     def __init__(self, app_name):
         try:
             import gi
@@ -82,7 +87,7 @@ class LinuxNotifier:
             from gi.repository import GdkPixbuf
             
             image = GdkPixbuf.Pixbuf.new_from_file(image_file)
-
+            
             notify = Notify.Notification.new(notification.title(), notification.message())
             notify.set_icon_from_pixbuf(image)
             notify.set_image_from_pixbuf(image)
@@ -90,7 +95,8 @@ class LinuxNotifier:
             
             notify.show()
     
-class WindowsNotifier:
+
+class WindowsNotifier(BasicNotifier):
     def __init__(self, app_name):
         import win10toast
     
@@ -103,15 +109,17 @@ class WindowsNotifier:
                 duration=5,
                 icon_path=None
         )
-    
-class FallbackNotifier:
+
+
+class FallbackNotifier(BasicNotifier):
     def __init__(self, app_name):
-        print("{} does not support notifications for your system. Using fallback notifier.".format(app_name))
+        print(f"{app_name} does not support notifications for your system. Using fallback notifier.")
     
     def show(self, notification, image_file):
         print("------------------------------")
-        print("New notification!\n\tTitle: {}\n\tMessage: {}".format(notification.title(), notification.message()))
+        print(f"New notification!\n\tTitle: {notification.title()}\n\tMessage: {notification.message()}")
         print("------------------------------")
+
 
 def instance(config: QTWSConfig, params: dict):
     return Notifications(config)
