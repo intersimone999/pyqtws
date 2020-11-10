@@ -6,13 +6,13 @@ from threading import Thread
 
 class AppChooser:
     def __init__(self, serving_directory: str, port: int = 9000):
-        self.servingDirectory = serving_directory
+        self.serving_directory = serving_directory
         self.port = port
         self.server = None
         self.thread = None
 
     def start_serving(self):
-        os.chdir(self.servingDirectory)
+        os.chdir(self.serving_directory)
         TCPServer.allow_reuse_address = True
         self.server = TCPServer(("", self.port), SimpleHTTPRequestHandler)
         self.thread = Thread(target=self.__serve)
