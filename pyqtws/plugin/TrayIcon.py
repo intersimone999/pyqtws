@@ -28,7 +28,6 @@ class TrayIcon(QTWSPlugin):
         self.menu = pystray.Menu(
             pystray.MenuItem(
                 "Toggle visibility", 
-                #checked=lambda x: self.__check_visible(),
                 default=True, 
                 action=lambda: self.__toggle_visibility()
             ),
@@ -57,24 +56,12 @@ class TrayIcon(QTWSPlugin):
     def window_setup(self, window: QTWSMainWindow):
         self.window = window
         
-    def __check_visible(self):
-        if self.window:
-            return self.window.isVisible()
-        else:
-            return True
-    
     def __run_thread(self):
         self.tray_icon.run()
-        
-    def __label(self):
-        if self.window.isVisible():
-            return "Hide"
-        else:
-            return "Show"
-
+    
     def __toggle_visibility(self):
         self.window.setVisible(not self.window.isVisible())
-        
+    
     def __quit(self):
         self.window.quit()
 

@@ -65,6 +65,9 @@ class Notifier:
 
 class BasicNotifier:
     def show(self, notification, image_file):
+        """
+        Abstract notifier method call when a notification should be shown
+        """
         pass
     
 

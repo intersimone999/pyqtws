@@ -15,7 +15,7 @@ class ChangeUserAgent(QTWSPlugin):
         if user_agent in self.__default_user_agents.keys():
             self.user_agent = self.__default_user_agents[user_agent]
         else:
-            self.user_agent = self.user_agent
+            self.user_agent = user_agent
 
     def web_profile_setup(self, profile: QWebEngineProfile):
         profile.setHttpUserAgent(self.user_agent)

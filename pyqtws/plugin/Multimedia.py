@@ -84,18 +84,13 @@ class Multimedia(QTWSPlugin):
         while self.window.isVisible():
             time.sleep(1)
             self.__mpris2.refresh_properties()
-
+            
             if self.web.page().title():
                 self.__metadata["xesam:album"] = self.config.name
                 self.__metadata["xesam:title"] = self.web.page().title()
                 self.__metadata["xesam:url"] = self.web.page().url().toString()
-
+                
                 self.__mpris2.set_metadata(self.__metadata)
-
-    def __set_metadata_length(self, length):
-        if length:
-            self.__metadata["mpris:length"] = dbus.Int64(length * 1000 * 1000)
-
 
 class MultimediaPluginMPRIS2(Object):
     MPRIS_INTERFACE = "org.mpris.MediaPlayer2"
@@ -145,6 +140,9 @@ class MultimediaPluginMPRIS2(Object):
 
     @dbus.service.method(MPRIS_INTERFACE, in_signature='', out_signature='')
     def Raise(self):
+        """
+        MPRIS method not implemented yet
+        """
         pass
 
     @dbus.service.method(MPRIS_INTERFACE, in_signature='', out_signature='')
@@ -178,18 +176,30 @@ class MultimediaPluginMPRIS2(Object):
 
     @dbus.service.method(MPRIS_PLAYER_INTERFACE, in_signature='', out_signature='')
     def Next(self):
+        """
+        MPRIS method not implemented yet
+        """
         pass
 
     @dbus.service.method(MPRIS_PLAYER_INTERFACE, in_signature='', out_signature='')
     def Previous(self):
+        """
+        MPRIS method not implemented yet
+        """
         pass
 
     @dbus.service.method(MPRIS_PLAYER_INTERFACE, in_signature='', out_signature='')
     def Stop(self):
+        """
+        MPRIS method not implemented yet
+        """
         pass
 
     @dbus.service.method(MPRIS_PLAYER_INTERFACE, in_signature='x', out_signature='')
     def Stop(self, x):
+        """
+        MPRIS method not implemented yet
+        """
         pass
 
     @dbus.service.method(MPRIS_PLAYER_INTERFACE, in_signature='ox', out_signature='')
@@ -201,6 +211,9 @@ class MultimediaPluginMPRIS2(Object):
 
     @dbus.service.method(MPRIS_PLAYER_INTERFACE, in_signature='s', out_signature='')
     def OpenUri(self, s):
+        """
+        MPRIS method not implemented yet
+        """
         pass
 
     @dbus.service.method("org.freedesktop.DBus.Properties", in_signature='ss', out_signature='v')
@@ -237,14 +250,11 @@ class MultimediaPluginMPRIS2(Object):
 
     @dbus.service.signal("org.freedesktop.DBus.Properties", signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties, invalidated_properties):
+        """
+        MPRIS method not implemented yet
+        """
         pass
-
-    # @dbus.service.method("org.freedesktop.DBus.Introspectable", in_signature='', out_signature='s',
-    #                      path_keyword='object_path', connection_keyword='connection')
-    # def Introspect(self, object_path, connection):
-    #     super().Introspect(object_path, connection)
-    #     self.object_path = object_path
-
+    
     def set_metadata(self, metadata):
         if metadata:
             metadata["mpris:trackid"] = dbus.ObjectPath(self.track_path)
