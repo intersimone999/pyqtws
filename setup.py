@@ -58,5 +58,4 @@ setuptools.setup(name='silo',
                  install_requires=[
                      'PyQt5', 'PyQtWebEngine', 'dbus-python', 'pygi', 'pystray'
                  ],
-                 package_data=package_data,
                  zip_safe=False)

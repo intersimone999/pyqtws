@@ -139,7 +139,6 @@ if __name__ == '__main__':
         else:
             app_id = "appChooser"
 
-    app_chooser = None
     if app_id and app_id.lower() == "appchooser":
         apps_path = os.path.join(__home__, __app_folder__)
         app = QApplication(["silos"])
@@ -158,7 +157,7 @@ if __name__ == '__main__':
         config = QTWSConfig(app_path)
 
         app = QApplication(["silos"])
-        ex = QTWSMainWindow(app_id, app_path, args.url, app_chooser)
+        ex = QTWSMainWindow(app_id, app_path, args.url)
         sys.exit(app.exec_())
 
     else:
