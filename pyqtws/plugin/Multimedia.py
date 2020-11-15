@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QCloseEvent
 from PyQt5.QtWidgets import QAction, QMenu
 
 from silo_window import QTWSMainWindow
@@ -26,6 +26,7 @@ class Multimedia(QTWSPlugin):
         self.play_pause_action = None
         self.config = config
         self.__mpris2 = None
+        self.terminated = False
 
     def window_setup(self, window: QTWSMainWindow):
         self.window = window
@@ -42,7 +43,7 @@ class Multimedia(QTWSPlugin):
             self.__check_completed(False)
 
     def __check_completed(self, completed):
-        if not completed:
+        if not completed and not self.terminated:
             self.web.page().runJavaScript("document.readyState === \"complete\"", self.__check_completed)
         else:
             self.__mpris2.refresh_properties()
@@ -65,6 +66,9 @@ class Multimedia(QTWSPlugin):
             self.play_pause_action.triggered.connect(self.__mpris2.Play)
 
         menu.addAction(self.play_pause_action)
+        
+    def close_event(self, window: QTWSMainWindow, event: QCloseEvent):
+        self.terminated = True
 
     def __init_mpris2(self):
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
