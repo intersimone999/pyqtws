@@ -13,8 +13,8 @@ from PyQt5.QtCore import QSettings
 
 from silo_window import QTWSMainWindow
 from options_window import QTWSOptionsWindow
+from chooser_window import QTWSChooserWindow
 from config import *
-from appchooser import AppChooser
 from urllib.parse import urlparse
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
@@ -141,8 +141,11 @@ if __name__ == '__main__':
 
     app_chooser = None
     if app_id and app_id.lower() == "appchooser":
-        app_chooser = AppChooser(os.path.join(__home__, __app_folder__, "appChooser"))
-        app_chooser.start_serving()
+        apps_path = os.path.join(__home__, __app_folder__)
+        app = QApplication(["silos"])
+        ex = QTWSChooserWindow(apps_path)
+        sys.exit(app.exec_())
+        
 
     if app_id:
         app_id = app_id.lower()

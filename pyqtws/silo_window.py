@@ -4,7 +4,6 @@ from PyQt5.Qt import QShortcut, Qt, QObject
 from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
 from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
 
-from appchooser import AppChooser
 from config import *
 from web import QTWSWebView, QTWSWebPage
 from plugins import QTWSPluginManager
@@ -32,11 +31,10 @@ class EnterEventHandler(QObject):
 
 
 class QTWSMainWindow(QWidget):
-    def __init__(self, app_id, config_filename: str, url: str, app_chooser: AppChooser = None):
+    def __init__(self, app_id, config_filename: str, url: str = None):
         super().__init__()
 
         self.config = QTWSConfig(config_filename, app_id)
-        self.app_chooser = app_chooser
         self.app_settings = QSettings(self.config.name, "Save State", self)
 
         QTWSPluginManager.instance().load_plugins(self.config)
@@ -54,9 +52,7 @@ class QTWSMainWindow(QWidget):
 
     def closeEvent(self, event: QCloseEvent):
         self.__write_settings()
-        if self.app_chooser:
-            self.app_chooser.stop_serving()
-
+        
         QTWSPluginManager.instance().each(lambda plugin: plugin.close_event(self, event))
         
     def quit(self):

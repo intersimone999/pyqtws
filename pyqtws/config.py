@@ -9,7 +9,8 @@ class QTWSConfig:
     def __init__(self, config_filename: str, app_id: str = None):
         with open(config_filename) as f:
             self.complete_json = json.load(f)
-
+        
+        self.config_filename = config_filename
         self.app_id = app_id
         self.name: str = ""
         self.description: str = ""
