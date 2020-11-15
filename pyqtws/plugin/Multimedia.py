@@ -296,7 +296,7 @@ class MultimediaPluginMPRIS2(Object):
             self.Set(self.MPRIS_PLAYER_INTERFACE, "Rate", dbus.Double(rate))
 
     def __set_metadata_length(self, length):
-        if length:
+        if length and "Metadata" in self.properties[self.MPRIS_PLAYER_INTERFACE]:
             length = length * 1000 * 1000
             self.properties[self.MPRIS_PLAYER_INTERFACE]["Metadata"]["mpris:length"] = dbus.Int64(length)
             metadata = self.properties[self.MPRIS_PLAYER_INTERFACE]["Metadata"]
