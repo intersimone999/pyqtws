@@ -14,7 +14,7 @@ from PyQt5.QtCore import QSettings
 from silo_window import QTWSMainWindow
 from options_window import QTWSOptionsWindow
 from chooser_window import QTWSChooserWindow
-from config import *
+from config import QTWSConfig
 from urllib.parse import urlparse
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
@@ -28,53 +28,6 @@ def warn(message: str):
 def __app_path():
     print(os.path.realpath(__file__).replace(__file__, "") + "apps")
     return 0
-
-
-def __install_service(fname: str):
-    app_id = os.path.basename(fname).replace(".qtws", "")
-
-    if " " in app_id or not app_id.islower():
-        warn("The name of a service file must be in lowercase and it must contain no whitespaces.")
-        return -1
-    if os.path.exists(fname):
-        try:
-            config = QTWSConfig(fname)
-            print("Do you want to install the following service?")
-            print("Name: " + config.name)
-            print("Description: " + config.description)
-            print("Scope: " + str.join(", ", config.scope))
-
-            problems = config.problems()
-            if len(problems) > 0:
-                print("Warning:")
-            for problem in problems:
-                print("\t" + problems)
-
-            answer = None
-            while not answer or answer not in ['y', 'n']:
-                answer = input("Do you want to install this service? (y/n)").lower()
-
-            if answer == 'y':
-                dest_fname = os.path.join(__home__, "apps/" + app_id + ".qtws")
-                try:
-                    with open(fname) as in_file:
-                        with open(dest_fname, "w") as out_file:
-                            out_file.write(in_file.read())
-                except Exception as e:
-                    warn("The service could not be installed: " + str(e))
-                    return -1
-
-                return 0
-            else:
-                print("Aborted")
-                return 0
-
-        except:
-            warn("The specified file does not seem to be a valid service file.")
-
-    else:
-        warn("The specified file does not exist.")
-        return -1
 
 
 def __find_app_by_url(url: str):
@@ -101,7 +54,6 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--app', help='opens the specified app', required=False)
     parser.add_argument('-f', '--appfile', help='opens the specified app file', required=False)
     parser.add_argument('-p', '--plugin', help='QT plugins to enable', required=False)
-    parser.add_argument('-i', '--install', help='install the specified file', required=False)
     parser.add_argument('-o', '--options', help='open the options window', required=False, action='store_const', const='c')
     parser.add_argument('-A', '--path', help='prints the path to the app folder in the local system', action='store_const', required=False, const='c')
     parser.add_argument('url', help='opens the specified URL with the correct app', nargs='?')
@@ -109,9 +61,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     app_id = args.app
     
-    if args.install:
-        sys.exit(__install_service(args.install))
-        
     if args.path:
         sys.exit(__app_path())
     
