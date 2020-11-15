@@ -4,11 +4,15 @@ import sys
 import webbrowser
 import glob
 import os
+import subprocess
 from argparse import ArgumentParser
 
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QSettings
+
 
 from mainwindow import QTWSMainWindow
+from options import QTWSOptionsWindow
 from config import *
 from appchooser import AppChooser
 from urllib.parse import urlparse
@@ -98,6 +102,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--appfile', help='opens the specified app file', required=False)
     parser.add_argument('-p', '--plugin', help='QT plugins to enable', required=False)
     parser.add_argument('-i', '--install', help='install the specified file', required=False)
+    parser.add_argument('-o', '--options', help='open the options window', required=False, action='store_const', const='c')
     parser.add_argument('-A', '--path', help='prints the path to the app folder in the local system', action='store_const', required=False, const='c')
     parser.add_argument('url', help='opens the specified URL with the correct app', nargs='?')
 
@@ -109,13 +114,27 @@ if __name__ == '__main__':
         
     if args.path:
         sys.exit(__app_path())
+    
+    if args.options:
+        app = QApplication(["silos"])
+        ex = QTWSOptionsWindow()
+        sys.exit(app.exec_())
 
     if not app_id:
         if args.url:
             app_id = __find_app_by_url(args.url)
             if not app_id:
                 url = args.url.replace("silo://", "https://")
-                webbrowser.open(url)
+                silo_options = QSettings("silos", "Options")
+                default_browser = silo_options.value("browser/defaultBrowser")
+                if default_browser is None:
+                    app = QApplication(["silos"])
+                    ex = QTWSOptionsWindow(True)
+                    app.exec_()
+                
+                silo_options = QSettings("silos", "Options")
+                default_browser = silo_options.value("browser/defaultBrowser")
+                subprocess.call([default_browser, url])
                 sys.exit(0)
         else:
             app_id = "appChooser"
