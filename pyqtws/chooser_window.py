@@ -5,7 +5,7 @@ from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
 from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
 
 from silo_window import QTWSMainWindow
-from config import *
+from config import QTWSConfig
 from web import QTWSWebView, QTWSWebPage
 from plugins import QTWSPluginManager
 

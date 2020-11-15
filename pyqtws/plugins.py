@@ -7,33 +7,57 @@ class QTWSPlugin:
         self.name = name
 
     def web_engine_setup(self, web):
+        """
+        Abstract method that allows to setup the web engine
+        """
         pass
     
     def web_profile_setup(self, profile):
+        """
+        Abstract method that allows to setup the profile of the web engine
+        """
         pass
 
     def window_setup(self, window):
-        pass
-
-    def on_action_clicked(self):
+        """
+        Abstract method that allows to setup the main window
+        """
         pass
 
     def on_page_loaded(self, url: QUrl):
+        """
+        Abstract method that is called every time a page is loaded
+        """
         pass
 
     def add_menu_items(self, menu: QMenu):
+        """
+        Abstract method that allows to add items to the context menu
+        """
         pass
 
     def is_url_blacklisted(self, url: QUrl):
+        """
+        Method that checks if the given url is blacklisted
+        """
         return False
 
     def is_url_whitelisted(self, url: QUrl):
+        """
+        Method that checks if the given url is whitelisted
+        """
         return False
     
     def close_event(self, window, event):
+        """
+        Abstract method that is called when the user closes the window
+        """
         pass
     
     def register_shortcuts(self, window):
+        """
+        Abstract method that allows to register custom shortcuts for the plugin
+        """
         pass
 
 

@@ -4,7 +4,7 @@ from PyQt5.Qt import QShortcut, Qt, QObject
 from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
 from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
 
-from config import *
+from config import QTWSConfig
 from web import QTWSWebView, QTWSWebPage
 from plugins import QTWSPluginManager
 

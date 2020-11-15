@@ -67,15 +67,15 @@ class QTWSWebView(QWebEngineView):
         self.__actionQuit.triggered.connect(self.__quit)
 
         self.__customActions = list()
-        for menuItem in self.config.menu:
-            if menuItem.icon:
-                action = QAction(QIcon.fromTheme(menuItem.icon), menuItem.title)
+        for menu_item in self.config.menu:
+            if menu_item.icon:
+                action = QAction(QIcon.fromTheme(menu_item.icon), menu_item.title)
             else:
-                action = QAction(menuItem.title)
+                action = QAction(menu_item.title)
 
-            action.setData(menuItem.action)
+            action.setData(menu_item.action)
 
-            if menuItem.separator:
+            if menu_item.separator:
                 self.__customActions.append("-")
 
             self.__customActions.append(action)
