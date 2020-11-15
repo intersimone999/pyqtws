@@ -1,0 +1,13 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Categories=Internet
+Comment=Silos Options
+Exec=/usr/bin/silo -o
+GenericName=Silos Options
+Icon=applications-internet
+MimeType=
+Name=Silos Options
+Path=
+StartupNotify=true
+Terminal=false
+Type=Application
