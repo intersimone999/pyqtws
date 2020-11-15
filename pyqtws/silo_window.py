@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QUrl
 from PyQt5.Qt import QShortcut, Qt, QObject
 from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
 from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
