@@ -2,7 +2,7 @@ from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
 
 from PyQt5.QtGui import QImage, QCloseEvent
 
-from mainwindow import QTWSMainWindow
+from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
 from web import QTWSWebView
 from config import QTWSConfig

@@ -11,8 +11,8 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QSettings
 
 
-from mainwindow import QTWSMainWindow
-from options import QTWSOptionsWindow
+from silo_window import QTWSMainWindow
+from options_window import QTWSOptionsWindow
 from config import *
 from appchooser import AppChooser
 from urllib.parse import urlparse

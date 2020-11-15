@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.Qt import QShortcut, Qt
 from PyQt5.QtWidgets import QAction, QMenu, QApplication, QMessageBox
 
-from mainwindow import QTWSMainWindow
+from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
 from config import QTWSConfig
 import time

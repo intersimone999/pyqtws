@@ -1,6 +1,6 @@
 from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
 
-from mainwindow import QTWSMainWindow
+from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
 from web import QTWSWebView
 from config import QTWSConfig

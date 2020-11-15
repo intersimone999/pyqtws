@@ -2,7 +2,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QMenu
 
-from mainwindow import QTWSMainWindow
+from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
 from web import QTWSWebView
 from config import QTWSConfig
