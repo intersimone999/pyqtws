@@ -10,7 +10,6 @@ from argparse import ArgumentParser
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QSettings
 
-
 from silo_window import QTWSMainWindow
 from options_window import QTWSOptionsWindow
 from chooser_window import QTWSChooserWindow
@@ -19,10 +18,6 @@ from urllib.parse import urlparse
 
 __home__ = os.path.dirname(os.path.realpath(__file__))
 __app_folder__ = "apps"
-
-
-def warn(message: str):
-    print(message, file=sys.stderr)
 
 
 def __app_path():

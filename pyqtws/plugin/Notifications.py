@@ -5,6 +5,7 @@ from plugins import QTWSPlugin
 from web import QTWSWebView
 from config import QTWSConfig
 
+import logging
 import tempfile
 import os
 import platform
@@ -41,7 +42,7 @@ class Notifier:
                 Notifier.notifier = FallbackNotifier(app_name)
             
         except ImportError:
-            print("Your system ({}) is supported, but you miss the required python libraries.".format(platform.system()))
+            logging.error(f"Your system ({platform.system()}) is supported, but you miss the required python libraries.")
             Notifier.notifier = FallbackNotifier(app_name)
             
     def set_profile(profile):
@@ -81,7 +82,7 @@ class LinuxNotifier(BasicNotifier):
             Notify.init(app_name)
             self.notifications_enabled = True
         except ImportError:
-            print("Notifications not enabled because the gi package is probably not available.")
+            logging.error("Notifications not enabled because the gi package is probably not available.")
             self.notifications_enabled = False
     
     def show(self, notification, image_file):
@@ -116,12 +117,10 @@ class WindowsNotifier(BasicNotifier):
 
 class FallbackNotifier(BasicNotifier):
     def __init__(self, app_name):
-        print(f"{app_name} does not support notifications for your system. Using fallback notifier.")
+        logging.warning(f"{app_name} does not support notifications for your system. Using fallback notifier.")
     
     def show(self, notification, image_file):
-        print("------------------------------")
-        print(f"New notification!\n\tTitle: {notification.title()}\n\tMessage: {notification.message()}")
-        print("------------------------------")
+        logging.warning(f"New notification! Title: {notification.title()}; Message: {notification.message()}")
 
 
 def instance(config: QTWSConfig, params: dict):

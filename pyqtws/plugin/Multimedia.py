@@ -11,6 +11,7 @@ from threading import Thread
 from dbus.service import Object
 import main
 
+import logging
 import random
 import time
 import dbus
@@ -303,7 +304,7 @@ class MultimediaPluginMPRIS2(Object):
         if position:
             self.Set(self.MPRIS_PLAYER_INTERFACE, "Position", dbus.Int64(position * 1000 * 1000))
             
-        print(self.properties[self.MPRIS_PLAYER_INTERFACE]["Position"])
+        logging.debug(self.properties[self.MPRIS_PLAYER_INTERFACE]["Position"])
 
     def __set_rate(self, rate):
         if rate:
