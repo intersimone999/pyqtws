@@ -1,5 +1,6 @@
 import os
 import glob
+import platform
 from pathlib import Path
 
 class QTWSFolderManager:
@@ -11,6 +12,10 @@ class QTWSFolderManager:
         
         if paths is None:
             paths = []
+            
+            if platform.system().lower() == 'linux':
+                paths.append("/usr/share/silos-apps")
+            
             paths.append(os.path.join(__user_home, ".local", "share", "silos-apps"))
             paths.append(os.path.dirname(os.path.realpath(__file__)))
         
