@@ -6,6 +6,7 @@ from pathlib import Path
 class QTWSFolderManager:
     HOME = None
     
+    @staticmethod
     def setup(paths=None):
         QTWSFolderManager.HOME = None
         __user_home = str(Path.home())
@@ -27,24 +28,30 @@ class QTWSFolderManager:
         if QTWSFolderManager.HOME is None:
             raise NoHomeFolderError()
     
+    @staticmethod
     def home_folder():
         return os.path.join(QTWSFolderManager.HOME)
     
+    @staticmethod
     def apps_folder():
         return os.path.join(QTWSFolderManager.HOME, "apps")
     
+    @staticmethod
     def all_apps():
         return glob.iglob(os.path.join(QTWSFolderManager.apps_folder(), "*.qtws"))
     
+    @staticmethod
     def app_file(name):
         if not name.endswith(".qtws"):
             name = name + ".qtws"
         
         return os.path.join(QTWSFolderManager.apps_folder(), name)
     
+    @staticmethod
     def icons_folder():
         return os.path.join(QTWSFolderManager.HOME, "icons") 
     
+    @staticmethod
     def icon_path(icon):
         return os.path.join(QTWSFolderManager.HOME, icon)
 
