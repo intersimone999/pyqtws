@@ -4,15 +4,15 @@ from PyQt5.Qt import QShortcut, Qt, QObject
 from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
 from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
 
+from folder_manager import QTWSFolderManager
 from silo_window import QTWSMainWindow
 from config import QTWSConfig
 from web import QTWSWebView, QTWSWebPage
 from plugins import QTWSPluginManager
 
 import os
+import sys
 import glob
-
-__home__ = os.path.dirname(os.path.realpath(__file__))
 
 
 class QAppWidget(QWidget):
@@ -23,7 +23,7 @@ class QAppWidget(QWidget):
         
         self.can_open = True
         
-        self.icon = QIcon(os.path.join(__home__, self.app.icon))
+        self.icon = QIcon(self.app.icon)
         self.button = QPushButton(self.app.name)
         self.button.setIcon(self.icon)
         self.button.setStyleSheet("QPushButton { text-align: left; padding: 8px; }")
@@ -46,7 +46,12 @@ class QTWSChooserWindow(QWidget):
     def __init__(self, apps_folder):
         super().__init__()
         self.__load_app_configs(apps_folder)
-        self.__init_ui()
+        if len(self.apps) > 0:
+            self.__init_ui()
+        else:
+            QMessageBox().warning(self, 'No apps available', 'You have no apps installed. Please install at least an app to start.', QMessageBox.Ok)
+            sys.exit(0)
+        
     
     def __load_app_configs(self, folder):
         self.apps = []

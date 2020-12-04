@@ -10,8 +10,6 @@ from plugins import QTWSPluginManager
 
 import os
 
-__home__ = os.path.dirname(os.path.realpath(__file__))
-
 
 class QFileChooser(QWidget):
     def __init__(self, initial_value = None):

@@ -10,8 +10,6 @@ from plugins import QTWSPluginManager
 
 import os
 
-__home__ = os.path.dirname(os.path.realpath(__file__))
-
 
 class EnterEventHandler(QObject):
     def __init__(self):
@@ -107,7 +105,7 @@ class QTWSMainWindow(QWidget):
 
         self.setLayout(layout)
 
-        self.setWindowIcon(QIcon(os.path.join(__home__, self.config.icon)))
+        self.setWindowIcon(QIcon(self.config.icon))
         self.show()
 
         self.maximized = self.isMaximized()

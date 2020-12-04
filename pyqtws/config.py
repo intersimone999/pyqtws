@@ -4,6 +4,8 @@ import os
 
 from PyQt5.QtCore import QUrl
 
+from folder_manager import QTWSFolderManager
+
 
 class QTWSConfig:
     def __init__(self, config_filename: str, app_id: str = None):
@@ -65,7 +67,7 @@ class QTWSConfig:
             if type(self.icon) != str:
                 raise QTWSConfigException("The parameter icon should be a string parameter")
             else:
-                self.icon = os.path.join(os.path.dirname(os.path.realpath(__file__)), self.icon)
+                self.icon = os.path.join(QTWSFolderManager.icon_path(self.icon))
         else:
             raise QTWSConfigException("Cannot find the icon in the configuration file")
 

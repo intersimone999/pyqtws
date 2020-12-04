@@ -5,30 +5,26 @@ import webbrowser
 import glob
 import os
 import subprocess
+
 from argparse import ArgumentParser
+from urllib.parse import urlparse
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QSettings
 
-from silo_window import QTWSMainWindow
+from folder_manager import QTWSFolderManager, NoHomeFolderError
+from silo_window    import QTWSMainWindow
 from options_window import QTWSOptionsWindow
 from chooser_window import QTWSChooserWindow
-from config import QTWSConfig
-from urllib.parse import urlparse
-
-__home__ = os.path.dirname(os.path.realpath(__file__))
-__app_folder__ = "apps"
+from config         import QTWSConfig
 
 
 def __app_path():
-    print(os.path.realpath(__file__).replace(__file__, "") + "apps")
+    print(QTWSFolderManager.apps_folder())
     return 0
 
 
-def __find_app_by_url(url: str):
-    global __home__
-    global __app_folder__
-    
+def __find_app_by_url(url: str):    
     parsed_url = urlparse(url)
     if parsed_url.scheme == "silo":
         if parsed_url.netloc == "start":
@@ -36,7 +32,7 @@ def __find_app_by_url(url: str):
         elif parsed_url.netloc == "choose":
             return "appChooser"
 
-    for app_config in glob.iglob(os.path.join(__home__, __app_folder__, '*.qtws')):
+    for app_config in QTWSFolderManager.all_apps():
         conf = QTWSConfig(app_config)
         if conf.in_scope(url):
             return app_config.split("/")[-1].replace('.qtws', '')
@@ -48,6 +44,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description='The new web.')
     parser.add_argument('-a', '--app', help='opens the specified app', required=False)
     parser.add_argument('-f', '--appfile', help='opens the specified app file', required=False)
+    parser.add_argument('-r', '--root', help='specifies the root apps folder for silos', required=False)
     parser.add_argument('-p', '--plugin', help='QT plugins to enable', required=False)
     parser.add_argument('-o', '--options', help='open the options window', required=False, action='store_const', const='c')
     parser.add_argument('-A', '--path', help='prints the path to the app folder in the local system', action='store_const', required=False, const='c')
@@ -55,6 +52,17 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     app_id = args.app
+    
+    try:
+        if args.root:
+            QTWSFolderManager.setup([args.root])
+        else:
+            QTWSFolderManager.setup()
+    except NoHomeFolderError:
+        app = QApplication(["silos"])
+        QMessageBox().critical(self, 'No apps available', 'No app paths available on your system.', QMessageBox.Ok)
+        ex = QTWSOptionsWindow()
+        sys.exit(app.exec_())
     
     if args.path:
         sys.exit(__app_path())
@@ -84,9 +92,8 @@ if __name__ == '__main__':
             app_id = "appChooser"
 
     if app_id and app_id.lower() == "appchooser":
-        apps_path = os.path.join(__home__, __app_folder__)
         app = QApplication(["silos"])
-        ex = QTWSChooserWindow(apps_path)
+        ex = QTWSChooserWindow(QTWSFolderManager.apps_folder())
         sys.exit(app.exec_())
         
 
@@ -96,10 +103,10 @@ if __name__ == '__main__':
         if args.appfile:
             app_path = args.appfile
         else:
-            app_path = os.path.join(__home__, __app_folder__, app_id + ".qtws")
-            
+            app_path = QTWSFolderManager.app_file(app_id)
+        
         config = QTWSConfig(app_path)
-
+        
         app = QApplication(["silos"])
         ex = QTWSMainWindow(app_id, app_path, args.url)
         sys.exit(app.exec_())
