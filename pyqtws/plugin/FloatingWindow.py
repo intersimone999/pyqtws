@@ -8,6 +8,7 @@ from plugins import QTWSPlugin
 from config import QTWSConfig
 import time
 
+
 class FloatingWindow(QTWSPlugin):
     def __init__(self, config):
         super().__init__("FloatingWindow")
