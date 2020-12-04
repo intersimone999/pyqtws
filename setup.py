@@ -4,8 +4,6 @@ import setuptools
 import os
 import glob
 
-from pyqtws.config import QTWSConfig
-
 setuptools.setup(name='pyqtws',
                  version='0.1.49',
                  scripts=["silo"],
