@@ -7,7 +7,7 @@ import glob
 from pyqtws.config import QTWSConfig
 
 setuptools.setup(name='pyqtws',
-                 version='0.1.47',
+                 version='0.1.48',
                  scripts=["silo"],
                  description='Standalone website wrapper',
                  url='http://github.com/intersimone999/pyqtws',
