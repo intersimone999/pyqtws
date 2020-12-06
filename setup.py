@@ -5,7 +5,7 @@ import os
 import glob
 
 setuptools.setup(name='pyqtws',
-                 version='0.1.50',
+                 version='0.1.51',
                  scripts=["silo"],
                  description='Standalone website wrapper',
                  url='http://github.com/intersimone999/pyqtws',
