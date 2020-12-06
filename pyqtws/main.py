@@ -107,7 +107,7 @@ if __name__ == '__main__':
         
         config = QTWSConfig(app_path)
         
-        app = QApplication(["silos"])
+        app = QApplication([f"silos-{app_id}"])
         ex = QTWSMainWindow(app_id, app_path, args.url)
         sys.exit(app.exec_())
 
