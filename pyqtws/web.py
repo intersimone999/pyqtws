@@ -3,8 +3,8 @@ import subprocess
 import logging
 
 from PyQt5.Qt import Qt
-from PyQt5.QtCore import QPoint, QUrl
-from PyQt5.QtWidgets import QApplication, QMessageBox, QMenu, QAction
+from PyQt5.QtCore import QPoint, QUrl, QDir, QFileInfo
+from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QMenu, QAction, QFileDialog, QProgressBar, QGridLayout, QPushButton, QLabel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView, QWebEngineSettings, QWebEngineProfile
 
@@ -42,11 +42,10 @@ class QTWSWebView(QWebEngineView):
 
         self.profile = QWebEngineProfile.defaultProfile()
         self.profile.downloadRequested.connect(lambda item: self.__download(item))
-        self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.name)
-        self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.name)
-        self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
         
         QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))
+        
+        self.download_windows = []
         
     def grant_permission(self, permission):
         self.permission_manager.grant_permission(permission)
@@ -113,9 +112,16 @@ class QTWSWebView(QWebEngineView):
         self.menu.popup(self.mapToGlobal(position))
         
     def __download(self, item):
-        url = item.url().toString()
-        webbrowser.open(url)
-        item.cancel()
+        path, _ = QFileDialog.getSaveFileName(self, "Save as", QDir(item.downloadDirectory()).filePath(item.downloadFileName()))
+        if path is None or len(path) == 0:
+            item.cancel()
+            return
+        
+        info = QFileInfo(path)
+        item.setDownloadDirectory(info.dir().path())
+        item.setDownloadFileName(info.fileName())
+        item.accept()
+        self.download_windows.append(DownloadProgressWindow(item))
 
     def __share(self):
         QApplication.instance().clipboard().setText(self.url().toString())
@@ -194,3 +200,57 @@ class QTWSWebPage(QWebEnginePage):
             return False
         else:
             return True
+
+
+class DownloadProgressWindow(QWidget):
+    def __init__(self, download):
+        super().__init__()
+        
+        self.download = download
+        self.__init_ui()
+        
+        self.download.downloadProgress.connect(lambda done, total: self.__update(done, total))
+        self.download.finished.connect(lambda: self.__completed())
+
+    def __init_ui(self):
+        self.setWindowTitle("Download")
+        
+        self.layout = QGridLayout()
+        
+        self.label        = QLabel(f"Downloading {self.download.path()}...", self)
+        self.progress_bar = QProgressBar()
+        
+        self.layout.addWidget(self.label, 0, 0)
+        self.layout.addWidget(self.progress_bar, 1, 0)
+        self.layout.addWidget(self.__build_action_buttons_group(), 1, 1)
+        self.layout.setContentsMargins(10, 5, 10, 5)
+        
+        self.setLayout(self.layout)
+        
+        self.show()
+        
+    def __build_action_buttons_group(self):
+        self.cancel_button  = QPushButton("Cancel")
+        self.cancel_button.clicked.connect(lambda: self.__on_cancel())
+        
+        group = QGridLayout()
+        group.addWidget(self.cancel_button, 0, 0)
+        
+        result = QWidget()
+        result.setLayout(group)
+        
+        return result
+    
+    def __update(self, done, total):
+        self.progress_bar.setRange(0, total)
+        self.progress_bar.setValue(done)
+    
+    def __completed(self):
+        self.label.setText("Download completed!")
+        self.cancel_button.setText("Close")
+    
+    def __on_cancel(self):
+        if not self.download.isFinished():
+            self.download.cancel()
+        
+        self.close()
