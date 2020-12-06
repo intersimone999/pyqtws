@@ -168,7 +168,7 @@ class QTWSWebPage(QWebEnginePage):
     def __open_outside_url(self, url):
         silo_url = url.toString().replace("https://", "silo://").replace("http://", "silo://")
         logging.info("Going outside because of {}: redirecting to {}".format(url.toString(), silo_url))
-        subprocess.Popen(['silo', silo_url], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        webbrowser.open(silo_url)
 
     def __check__blacklisted(self, url: QUrl):
         for plugin in QTWSPluginManager.instance().plugins:

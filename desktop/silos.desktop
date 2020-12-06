@@ -11,3 +11,4 @@ Path=
 StartupNotify=true
 Terminal=false
 Type=Application
+MimeType=x-scheme-handler/silo;

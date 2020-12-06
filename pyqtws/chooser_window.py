@@ -13,6 +13,7 @@ from plugins import QTWSPluginManager
 import os
 import sys
 import glob
+import webbrowser
 
 
 class QAppWidget(QWidget):
@@ -28,18 +29,19 @@ class QAppWidget(QWidget):
         self.button.setIcon(self.icon)
         self.button.setStyleSheet("QPushButton { text-align: left; padding: 8px; }")
         self.clicked = self.button.clicked
-        self.clicked.connect(lambda: self.openApp())
+        self.clicked.connect(lambda: self.open_app())
         self.layout.addWidget(self.button)
         
         self.setLayout(self.layout)
         self.show()
     
-    def openApp(self):
+    def open_app(self):
         if not self.can_open:
             return
         
         self.can_open = False
-        QTWSMainWindow(self.app.app_id, self.app.config_filename)
+        webbrowser.open(f"silo://start#{self.app.app_id}")
+        sys.exit(0)
 
 class QTWSChooserWindow(QWidget):
     ELEMENTS_PER_ROW = 3
