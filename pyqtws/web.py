@@ -41,6 +41,9 @@ class QTWSWebView(QWebEngineView):
         self.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
 
         self.profile = QWebEngineProfile.defaultProfile()
+        self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.app_id)
+        self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.app_id)
+        self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
         self.profile.downloadRequested.connect(lambda item: self.__download(item))
         
         QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))

@@ -109,18 +109,12 @@ class QTWSMainWindow(QWidget):
         self.show()
 
         self.maximized = self.isMaximized()
-
-    def __init_web_view(self):
-        profile = QWebEngineProfile.defaultProfile()
-
-        profile.setCachePath(profile.cachePath() + "/" + self.config.name)
-        profile.setPersistentStoragePath(profile.persistentStoragePath() + "/" + self.config.name)
-        profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
-
-        self.web.page().fullScreenRequested.connect(self.__full_screen_requested)
-
+        
         if self.config.always_on_top:
             self.set_always_on_top(True)
+
+    def __init_web_view(self):
+        self.web.page().fullScreenRequested.connect(self.__full_screen_requested)
 
     def __full_screen_requested(self, request: QWebEngineFullScreenRequest):
         if request.toggleOn():
