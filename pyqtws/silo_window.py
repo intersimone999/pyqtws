@@ -29,12 +29,14 @@ class EnterEventHandler(QObject):
 
 
 class QTWSMainWindow(QWidget):
-    def __init__(self, app_id, config_filename: str, url: str = None):
+    def __init__(self, app_id, config_filename: str, url: str = None, profile: str = None):
         super().__init__()
-
+        
         self.config = QTWSConfig(config_filename, app_id)
         self.app_settings = QSettings(self.config.name, "Save State", self)
-
+        
+        self.profile_name = profile
+        
         QTWSPluginManager.instance().load_plugins(self.config)
         self.__init_ui(url)
         self.__init_web_view()
@@ -96,7 +98,7 @@ class QTWSMainWindow(QWidget):
             
         url = url.replace('silo://', 'https://')
 
-        self.web = QTWSWebView(self.config, self)
+        self.web = QTWSWebView(self.config, self, self.profile_name)
         self.web.load(QUrl(url))
 
         layout = QVBoxLayout()

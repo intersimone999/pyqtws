@@ -27,17 +27,17 @@ def __app_path():
 def __find_app_by_url(url: str):    
     parsed_url = urlparse(url)
     if parsed_url.scheme == "silo":
-        if parsed_url.netloc == "start":
-            return parsed_url.fragment
-        elif parsed_url.netloc == "choose":
-            return "appChooser"
+        if parsed_url.hostname == "start":
+            return (parsed_url.fragment, parsed_url.username)
+        elif parsed_url.hostname == "choose":
+            return ("appChooser", None)
 
     for app_config in QTWSFolderManager.all_apps():
         conf = QTWSConfig(app_config)
         if conf.in_scope(url):
-            return app_config.split("/")[-1].replace('.qtws', '')
+            return (app_config.split("/")[-1].replace('.qtws', ''), None)
 
-    return None
+    return (None, None)
 
 
 if __name__ == '__main__':
@@ -45,13 +45,15 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--app', help='opens the specified app', required=False)
     parser.add_argument('-f', '--appfile', help='opens the specified app file', required=False)
     parser.add_argument('-r', '--root', help='specifies the root apps folder for silos', required=False)
+    parser.add_argument('-P', '--profile', help='profile to use', required=False)
     parser.add_argument('-p', '--plugin', help='QT plugins to enable', required=False)
     parser.add_argument('-o', '--options', help='open the options window', required=False, action='store_const', const='c')
     parser.add_argument('-A', '--path', help='prints the path to the app folder in the local system', action='store_const', required=False, const='c')
     parser.add_argument('url', help='opens the specified URL with the correct app', nargs='?')
 
     args = parser.parse_args()
-    app_id = args.app
+    app_id  = args.app
+    profile = args.profile
     
     try:
         if args.root:
@@ -74,7 +76,7 @@ if __name__ == '__main__':
 
     if not app_id:
         if args.url:
-            app_id = __find_app_by_url(args.url)
+            app_id, profile = __find_app_by_url(args.url)
             if not app_id:
                 url = args.url.replace("silo://", "https://")
                 silo_options = QSettings("silos", "Options")
@@ -108,7 +110,7 @@ if __name__ == '__main__':
         config = QTWSConfig(app_path)
         
         app = QApplication([f"silos-{app_id}"])
-        ex = QTWSMainWindow(app_id, app_path, args.url)
+        ex = QTWSMainWindow(app_id, app_path, args.url, profile=profile)
         sys.exit(app.exec_())
 
     else:

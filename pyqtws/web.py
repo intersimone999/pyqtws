@@ -14,11 +14,26 @@ from permissions import QTWSPermissionManager
 
 
 class QTWSWebView(QWebEngineView):
-    def __init__(self, config: QTWSConfig, window):
+    def __init__(self, config: QTWSConfig, window, profile_name: str = None):
         super().__init__()
         self.config = config
         self.window = window
-        self.webPage = QTWSWebPage(self.config)
+        
+        if profile_name is None:
+            self.profile = QWebEngineProfile.defaultProfile()
+            self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.app_id)
+            self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.app_id)
+        else:
+            self.profile = QWebEngineProfile(profile_name)
+            self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.app_id + "@" + profile_name)
+            self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.app_id + "@" + profile_name)
+            
+        self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
+        self.profile.downloadRequested.connect(lambda item: self.__download(item))
+        
+        QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))
+        
+        self.webPage = QTWSWebPage(self.config, self.profile)
         self.setPage(self.webPage)
         
         self.permission_manager = QTWSPermissionManager(self.webPage)
@@ -39,14 +54,6 @@ class QTWSWebView(QWebEngineView):
         self.settings().setAttribute(QWebEngineSettings.JavascriptCanOpenWindows, True)
         self.settings().setAttribute(QWebEngineSettings.ScrollAnimatorEnabled, True)
         self.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
-
-        self.profile = QWebEngineProfile.defaultProfile()
-        self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.app_id)
-        self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.app_id)
-        self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
-        self.profile.downloadRequested.connect(lambda item: self.__download(item))
-        
-        QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))
         
         self.download_windows = []
         
@@ -142,8 +149,8 @@ class QTWSWebView(QWebEngineView):
 
 
 class QTWSWebPage(QWebEnginePage):
-    def __init__(self, config: QTWSConfig):
-        super().__init__()
+    def __init__(self, config: QTWSConfig, profile: QWebEngineProfile):
+        super().__init__(profile)
         self.config = config
 
     def createWindow(self, t):
