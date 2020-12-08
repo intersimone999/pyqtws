@@ -16,5 +16,6 @@ class WebRTC(QTWSPlugin):
         self.web.grant_permission(QWebEnginePage.MediaVideoCapture)
         self.web.grant_permission(QWebEnginePage.DesktopAudioVideoCapture)
     
+
 def instance(config: QTWSConfig, params: dict):
     return WebRTC(config)

@@ -2,13 +2,11 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt5.QtCore import QSettings, QUrl
 from PyQt5.Qt import QShortcut, Qt, QObject
 from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
-from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
+from PyQt5.QtWebEngineWidgets import QWebEngineFullScreenRequest
 
 from config import QTWSConfig
 from web import QTWSWebView, QTWSWebPage
 from plugins import QTWSPluginManager
-
-import os
 
 
 class EnterEventHandler(QObject):
@@ -29,7 +27,13 @@ class EnterEventHandler(QObject):
 
 
 class QTWSMainWindow(QWidget):
-    def __init__(self, app_id, config_filename: str, url: str = None, profile: str = None):
+    def __init__(
+        self, 
+        app_id, 
+        config_filename: str, 
+        url: str = None, 
+        profile: str = None
+    ):
         super().__init__()
         
         self.config = QTWSConfig(config_filename, app_id)
@@ -48,12 +52,16 @@ class QTWSMainWindow(QWidget):
         self.installEventFilter(self.enter_event_handler)
         self.default_flags = self.windowFlags()
 
-        QTWSPluginManager.instance().each(lambda plugin: plugin.window_setup(self))
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.window_setup(self)
+        )
 
     def closeEvent(self, event: QCloseEvent):
         self.__write_settings()
         
-        QTWSPluginManager.instance().each(lambda plugin: plugin.close_event(self, event))
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.close_event(self, event)
+        )
         
     def quit(self):
         self.__action_quit()
@@ -116,7 +124,9 @@ class QTWSMainWindow(QWidget):
             self.set_always_on_top(True)
 
     def __init_web_view(self):
-        self.web.page().fullScreenRequested.connect(self.__full_screen_requested)
+        self.web.page().fullScreenRequested.connect(
+            self.__full_screen_requested
+        )
 
     def __full_screen_requested(self, request: QWebEngineFullScreenRequest):
         if request.toggleOn():
@@ -133,7 +143,10 @@ class QTWSMainWindow(QWidget):
         request.accept()
 
     def __write_settings(self):
-        self.app_settings.setValue("geometry/mainWindowGeometry", self.saveGeometry())
+        self.app_settings.setValue(
+            "geometry/mainWindowGeometry", 
+            self.saveGeometry()
+        )
 
         if not self.config.save_session:
             return
@@ -142,11 +155,13 @@ class QTWSMainWindow(QWidget):
         self.app_settings.setValue("site", site)
 
     def __read_settings(self):
-        if not self.config.save_session or self.app_settings.value("state/mainWindowState"):
+        if not self.config.save_session:
             return
 
         if self.config.save_session:
-            geometry_data = self.app_settings.value("geometry/mainWindowGeometry")
+            geometry_data = self.app_settings.value(
+                "geometry/mainWindowGeometry"
+            )
             if geometry_data:
                 self.restoreGeometry(geometry_data)
 
@@ -179,7 +194,9 @@ class QTWSMainWindow(QWidget):
         self.__keyAltLeft.setKey(Qt.ALT + Qt.Key_Left)
         self.__keyAltLeft.activated.connect(self.__action_back)
         
-        QTWSPluginManager.instance().each(lambda plugin: plugin.register_shortcuts(self))
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.register_shortcuts(self)
+        )
 
     def __action_back(self):
         self.web.back()

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import setuptools
-import os
-import glob
 
 setuptools.setup(name='pyqtws',
                  version='0.1.53',

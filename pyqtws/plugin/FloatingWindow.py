@@ -1,4 +1,3 @@
-from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
 from PyQt5.Qt import QShortcut, Qt
 from PyQt5.QtWidgets import QAction, QMenu, QApplication, QMessageBox
@@ -6,7 +5,6 @@ from PyQt5.QtWidgets import QAction, QMenu, QApplication, QMessageBox
 from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
 from config import QTWSConfig
-import time
 
 
 class FloatingWindow(QTWSPlugin):
@@ -28,9 +26,14 @@ class FloatingWindow(QTWSPlugin):
 
     def add_menu_items(self, menu: QMenu):
         self.floating_toggle = None
-        self.floating_toggle = QAction(QIcon.fromTheme("file-zoom-out"), "Enable floating window")
+        self.floating_toggle = QAction(
+            QIcon.fromTheme("file-zoom-out"),
+            "Enable floating window"
+        )
         
-        self.floating_toggle.triggered.connect(lambda: self.__activate_floating())
+        self.floating_toggle.triggered.connect(
+            lambda: self.__activate_floating()
+            )
         menu.addAction(self.floating_toggle)
         
     def close_event(self, window: QTWSMainWindow, event):
@@ -47,12 +50,12 @@ class FloatingWindow(QTWSPlugin):
         self.previous_x = self.window.x()
         self.previous_y = self.window.y()
         
-        self.previous_width      = self.window.width()
-        self.previous_height     = self.window.height()
-        self.previous_max_width  = self.window.maximumWidth()
+        self.previous_width = self.window.width()
+        self.previous_height = self.window.height()
+        self.previous_max_width = self.window.maximumWidth()
         self.previous_max_height = self.window.maximumHeight()
         
-        self.previously_maximized  = self.window.isMaximized()
+        self.previously_maximized = self.window.isMaximized()
         self.previously_fullscreen = self.window.isFullScreen()
                 
         self.window.set_always_on_top(True)
@@ -97,7 +100,7 @@ class FloatingWindow(QTWSPlugin):
     def __on_focus(self, event):
         self.screen = QApplication.instance().primaryScreen().geometry()
         
-        y  = self.screen.height() - self.window.height()
+        y = self.screen.height() - self.window.height()
         if event is not None and event.globalX() < self.window.width():
             x = self.screen.width() - self.window.width()
             self.window.move(x, y)

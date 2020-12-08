@@ -1,9 +1,12 @@
 from config import QTWSConfig
 from plugins import QTWSPlugin
-from PyQt5.QtWebEngineWidgets import QWebEngineProfile
 from PyQt5.QtCore import QSettings, QSize
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QMenu, QPushButton, QAction, QGridLayout, QInputDialog, QMessageBox, QLineEdit, QLabel
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QMenu, QAction
+from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QInputDialog, QMessageBox
 
 import webbrowser
 import hashlib
@@ -20,13 +23,22 @@ class MultiProfile(QTWSPlugin):
         self.settings = QSettings(self.config.name, "MultiProfile", window)
     
     def add_menu_items(self, menu: QMenu):
-        self.switch_profile_action = QAction(QIcon.fromTheme("user"), "Switch profile")
-        self.switch_profile_action.triggered.connect(lambda: self.__switch_profile())
+        self.switch_profile_action = QAction(
+            QIcon.fromTheme("user"),
+            "Switch profile"
+        )
+        self.switch_profile_action.triggered.connect(
+            lambda: self.__switch_profile()
+        )
         menu.addAction(self.switch_profile_action)
     
     def __switch_profile(self):
         if self.profile_chooser is None:
-            self.profile_chooser = ProfileChooserWindow(self, self.config, self.settings)
+            self.profile_chooser = ProfileChooserWindow(
+                self, 
+                self.config, 
+                self.settings
+            )
     
     def unregister_chooser_window(self):
         self.profile_chooser = None
@@ -38,7 +50,7 @@ class Profile:
     @staticmethod
     def deserialize(string):
         parts = string.split(":")
-        id   = parts[0]
+        id = parts[0]
         name = parts[1]
         return Profile(id, name)
         
@@ -55,25 +67,27 @@ class ProfileWidget(QWidget):
         super().__init__()
         self.profile_chooser = profile_chooser
         
-        self.config   = config
-        self.profile  = profile
+        self.config = config
+        self.profile = profile
         self.erasable = erasable
         self.layout = QGridLayout()
         
         self.can_open = True
         
-        self.icon  = QLabel(profile.name)
+        self.icon = QLabel(profile.name)
         self.icon.setMaximumWidth(20)
         self.icon.setPixmap(icon.pixmap(icon.actualSize(QSize(20, 20))))
         self.layout.addWidget(self.icon, 0, 0)
         
-        self.label  = QLabel(profile.name)
+        self.label = QLabel(profile.name)
         self.label.setStyleSheet("QLabel { min-width: 20em; }")
         self.layout.addWidget(self.label, 0, 1)
         
         self.button = QPushButton("Switch")
         self.button.setIcon(QIcon.fromTheme('system-switch-user'))
-        self.button.setStyleSheet("QPushButton { text-align: left; padding: 8px; }")
+        self.button.setStyleSheet(
+            "QPushButton { text-align: left; padding: 8px; }"
+        )
         self.clicked = self.button.clicked
         self.clicked.connect(lambda: self.switch_profile())
         self.layout.addWidget(self.button, 0, 2)
@@ -81,7 +95,9 @@ class ProfileWidget(QWidget):
         if self.erasable:
             self.erase = QPushButton("Delete")
             self.erase.setIcon(QIcon.fromTheme('delete'))
-            self.erase.setStyleSheet("QPushButton { text-align: left; padding: 8px; }")
+            self.erase.setStyleSheet(
+                "QPushButton { text-align: left; padding: 8px; }"
+            )
             self.erase.clicked.connect(lambda: self.delete())
             self.layout.addWidget(self.erase, 0, 3)
         
@@ -92,11 +108,17 @@ class ProfileWidget(QWidget):
     
     def switch_profile(self):
         if self.profile.id == 'default':
-            webbrowser.open(f"silo://start#{self.config.app_id}")
+            webbrowser.open(
+                f"silo://start#{self.config.app_id}"
+            )
         elif self.profile.id == 'anonymous':
-            webbrowser.open(f"silo://@start#{self.config.app_id}")
+            webbrowser.open(
+                f"silo://@start#{self.config.app_id}"
+            )
         else:
-            webbrowser.open(f"silo://{self.profile.id}@start#{self.config.app_id}")
+            webbrowser.open(
+                f"silo://{self.profile.id}@start#{self.config.app_id}"
+            )
             
         self.profile_chooser.close()
     
@@ -110,8 +132,11 @@ class ProfileChooserWindow(QWidget):
         self.plugin = plugin
         self.config = config
         self.settings = settings
-        if settings.value("profiles") is not None and settings.value("profiles"):
-            self.profiles = [Profile.deserialize(profile_string) for profile_string in settings.value("profiles").split(";")]
+        
+        profiles_str = settings.value("profiles")
+        if profiles_str is not None and profiles_str:
+            profiles = profiles_str.split(";")
+            self.profiles = [Profile.deserialize(p) for p in profiles]
         else:
             self.profiles = []
         
@@ -128,14 +153,30 @@ class ProfileChooserWindow(QWidget):
         
         self.layout = QGridLayout()
         
-        widget = ProfileWidget(self, self.config, Profile("default", "Default"), QIcon.fromTheme("user-home"))
+        widget = ProfileWidget(
+            profile_chooser=self, 
+            config=self.config, 
+            profile=Profile("default", "Default"), 
+            icon=QIcon.fromTheme("user-home")
+        )
         self.layout.addWidget(widget)
         
-        widget = ProfileWidget(self, self.config, Profile("anonymous", "Anonymous"), QIcon.fromTheme("view-hidden"))
+        widget = ProfileWidget(
+            profile_chooser=self, 
+            config=self.config, 
+            profile=Profile("anonymous", "Anonymous"), 
+            icon=QIcon.fromTheme("view-hidden")
+        )
         self.layout.addWidget(widget)
         
         for profile in self.profiles:
-            widget = ProfileWidget(self, self.config, profile, QIcon.fromTheme("user"), erasable=True)
+            widget = ProfileWidget(
+                profile_chooser=self,
+                config=self.config,
+                profile=profile,
+                icon=QIcon.fromTheme("user"),
+                erasable=True
+            )
             self.layout.addWidget(widget)
         
         self.__register_add_button()
@@ -151,17 +192,43 @@ class ProfileChooserWindow(QWidget):
         self.layout.addWidget(self.add_button)
     
     def __new_profile(self):
-        profile_name, okPressed = QInputDialog.getText(self, "Create profile", "Profile name:", QLineEdit.Normal, "")
+        profile_name, okPressed = QInputDialog.getText(
+            self, 
+            "Create profile", 
+            "Profile name:", 
+            QLineEdit.Normal, 
+            ""
+        )
         profile_name = profile_name.strip()
         if okPressed:
-            if len(profile_name) == 0 or len(profile_name) > Profile.MAX_NAME_SIZE:
-                QMessageBox().critical(self, 'Name not allowed', f'Empty names or names longer than {Profile.MAX_NAME_SIZE} characters are not allowed.', QMessageBox.Ok)
+            if len(profile_name) == 0 or \
+                    len(profile_name) > Profile.MAX_NAME_SIZE:
+                QMessageBox().critical(
+                    self, 
+                    'Name not allowed', 
+                    f'Empty names or names longer than '
+                    f'{Profile.MAX_NAME_SIZE} characters are not allowed.', 
+                    QMessageBox.Ok
+                )
                 return
-            if ':' in profile_name or ';' in profile_name or '@' in profile_name or '=' in profile_name:
-                QMessageBox().critical(self, 'Symbol not allowed', '":", ";", "@", and "=" are not allowed in the profile name.', QMessageBox.Ok)
+            if ':' in profile_name or \
+                    ';' in profile_name or \
+                    '@' in profile_name or \
+                    '=' in profile_name:
+                QMessageBox().critical(
+                    self, 
+                    'Symbol not allowed', 
+                    '":", ";", "@", and "=" are not allowed here.', 
+                    QMessageBox.Ok
+                )
                 return
             elif profile_name in map(lambda e: e.name, self.profiles):
-                QMessageBox().critical(self, 'Profile already existing', 'A profile with this name already exists.', QMessageBox.Ok)
+                QMessageBox().critical(
+                    self, 
+                    'Profile already existing', 
+                    'A profile with this name already exists.', 
+                    QMessageBox.Ok
+                )
                 return
             else:
                 profile_id = hashlib.md5(profile_name.encode()).hexdigest()
@@ -171,13 +238,20 @@ class ProfileChooserWindow(QWidget):
                 
                 self.layout.removeWidget(self.add_button)
                 self.add_button.hide()
-                widget = ProfileWidget(self, self.config, profile, QIcon.fromTheme("user"), erasable=True)
+                widget = ProfileWidget(
+                    profile_chooser=self, 
+                    config=self.config, 
+                    profile=profile, 
+                    icon=QIcon.fromTheme("user"), 
+                    erasable=True
+                )
                 self.layout.addWidget(widget)
                 widget.show()
                 self.__register_add_button()
     
     def save(self):
-        self.settings.setValue("profiles", ";".join(map(lambda e: e.serialize(), self.profiles)))
+        profiles = ";".join(map(lambda e: e.serialize(), self.profiles))
+        self.settings.setValue("profiles", profiles)
     
     def closeEvent(self, event):
         self.plugin.unregister_chooser_window()

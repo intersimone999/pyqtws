@@ -42,7 +42,10 @@ class Notifier:
                 Notifier.notifier = FallbackNotifier(app_name)
             
         except ImportError:
-            logging.error(f"Your system ({platform.system()}) is supported, but you miss the required python libraries.")
+            logging.error(
+                f"Your system ({platform.system()}) is supported, "
+                f"but you miss the required python libraries."
+            )
             Notifier.notifier = FallbackNotifier(app_name)
             
     def set_profile(profile):
@@ -82,7 +85,10 @@ class LinuxNotifier(BasicNotifier):
             Notify.init(app_name)
             self.notifications_enabled = True
         except ImportError:
-            logging.error("Notifications not enabled because the gi package is probably not available.")
+            logging.error(
+                "Notifications not enabled because "
+                "the gi package is probably not available."
+            )
             self.notifications_enabled = False
     
     def show(self, notification, image_file):
@@ -92,7 +98,10 @@ class LinuxNotifier(BasicNotifier):
             
             image = GdkPixbuf.Pixbuf.new_from_file(image_file)
             
-            notify = Notify.Notification.new(notification.title(), notification.message())
+            notify = Notify.Notification.new(
+                notification.title(),
+                notification.message()
+            )
             notify.set_icon_from_pixbuf(image)
             notify.set_image_from_pixbuf(image)
             notify.set_urgency(1)
@@ -102,7 +111,7 @@ class LinuxNotifier(BasicNotifier):
 
 class WindowsNotifier(BasicNotifier):
     def __init__(self, app_name):
-        import win10toast
+        pass
     
     def show(self, notification, image_file):
         import win10toast
@@ -117,10 +126,16 @@ class WindowsNotifier(BasicNotifier):
 
 class FallbackNotifier(BasicNotifier):
     def __init__(self, app_name):
-        logging.warning(f"{app_name} does not support notifications for your system. Using fallback notifier.")
+        logging.warning(
+            f"{app_name} does not support notifications "
+            f"for your system. Using fallback notifier."
+        )
     
     def show(self, notification, image_file):
-        logging.warning(f"New notification! Title: {notification.title()}; Message: {notification.message()}")
+        logging.warning(
+            f"New notification! Title: {notification.title()};"
+            f"Message: {notification.message()}"
+        )
 
 
 def instance(config: QTWSConfig, params: dict):

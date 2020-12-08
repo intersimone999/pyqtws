@@ -1,18 +1,14 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtCore import QSettings
-from PyQt5.Qt import QShortcut, Qt, QObject
-from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
-from PyQt5.QtWebEngineWidgets import QWebEngineProfile, QWebEngineFullScreenRequest
-
-from config import QTWSConfig
-from web import QTWSWebView, QTWSWebPage
-from plugins import QTWSPluginManager
 
 import os
 
 
 class QFileChooser(QWidget):
-    def __init__(self, initial_value = None):
+    def __init__(self, initial_value=None):
         super().__init__()
         
         if isinstance(initial_value, str):
@@ -25,7 +21,7 @@ class QFileChooser(QWidget):
                     break
         
         self.text_box = QLineEdit()
-        self.button   = QPushButton("Open")
+        self.button = QPushButton("Open")
         
         self.button.clicked.connect(lambda: self.__get_file())
         self.text_box.textChanged.connect(lambda text: self.__update(text))
@@ -40,7 +36,7 @@ class QFileChooser(QWidget):
         if self.selected_file is not None:
             self.text_box.setText(self.selected_file)
         
-    def check_file(self, file_name = False):
+    def check_file(self, file_name=False):
         if file_name is False:
             file_name = self.selected_file
             
@@ -64,11 +60,17 @@ class QFileChooser(QWidget):
         self.selected_file = text
 
 
-
 class QTWSOptionsWindow(QWidget):
-    SUGGESTED_FILES = ['/bin/chromium', '/bin/firefox', '/bin/vivaldi-stable', '/bin/falkon', '/bin/google-chrome-stable', '/bin/opera']
+    SUGGESTED_FILES = [
+        '/bin/chromium', 
+        '/bin/firefox', 
+        '/bin/vivaldi-stable', 
+        '/bin/falkon', 
+        '/bin/google-chrome-stable', 
+        '/bin/opera'
+    ]
     
-    def __init__(self, force = False):
+    def __init__(self, force=False):
         super().__init__()
         
         self.loaded_value = None
@@ -94,10 +96,10 @@ class QTWSOptionsWindow(QWidget):
         self.show()
         
     def __build_ok_cancel_group(self):
-        self.ok_button      = QPushButton("Ok")
+        self.ok_button = QPushButton("Ok")
         self.ok_button.clicked.connect(lambda: self.__on_ok())
         
-        self.cancel_button  = QPushButton("Cancel")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(lambda: self.__on_cancel())
         
         group = QGridLayout()
@@ -116,7 +118,10 @@ class QTWSOptionsWindow(QWidget):
             event.ignore()
 
     def __write_settings(self):
-        self.app_settings.setValue("browser/defaultBrowser", self.file_chooser.selected_file)
+        self.app_settings.setValue(
+            "browser/defaultBrowser", 
+            self.file_chooser.selected_file
+        )
     
     def __read_settings(self):
         value = self.app_settings.value("browser/defaultBrowser")
@@ -126,21 +131,37 @@ class QTWSOptionsWindow(QWidget):
 
     def __on_ok(self):
         if not self.file_chooser.check_file():
-            return self.__error("You have chosen a non-existing or a non-executable file.")
+            return self.__error(
+                "You have chosen a non-existing or a non-executable file."
+            )
         
         self.__write_settings()
         self.loaded_value = self.file_chooser.selected_file
-        QMessageBox().information(self, 'You are good to go!', 'You can now safely set silos as default web browser on your system: it will handle everything for you.', QMessageBox.Ok)
+        QMessageBox().information(
+            self, 
+            'You are good to go!', 
+            'You can now set silos as default web browser on your system:'
+            'it will handle everything for you.', 
+            QMessageBox.Ok
+        )
         self.close()
         return True
     
     def __on_cancel(self):
         if self.force and self.loaded_value is None:
-            return self.__error("No previously selected broswer. You need to select a web broswer and press \"Ok\" to continue.")
+            return self.__error(
+                "No previously selected broswer."
+                "You need to select a web broswer and press Ok to continue."
+            )
         
         self.close()
         return True
     
     def __error(self, message):
-        QMessageBox().critical(self, 'No valid broswer selected', message, QMessageBox.Ok)
+        QMessageBox().critical(
+            self, 
+            'No valid broswer selected', 
+            message, 
+            QMessageBox.Ok
+        )
         return False

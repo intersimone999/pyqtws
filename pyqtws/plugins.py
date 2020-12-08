@@ -77,8 +77,16 @@ class QTWSPluginManager:
     def load_plugins(self, config):
         self.plugins = list()
         for plugin_info in config.plugins:
-            plugin_module = __import__('plugin.' + plugin_info.name, globals(), locals(), [plugin_info.name])
-            plugin_instance = plugin_module.instance(config, plugin_info.params)
+            plugin_module = __import__(
+                'plugin.' + plugin_info.name, 
+                globals(), 
+                locals(), 
+                [plugin_info.name]
+            )
+            plugin_instance = plugin_module.instance(
+                config, 
+                plugin_info.params
+            )
             self.plugins.append(plugin_instance)
 
     def each(self, action: callable):

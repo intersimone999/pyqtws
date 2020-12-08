@@ -1,10 +1,7 @@
-from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
-
 from PyQt5.QtGui import QImage, QCloseEvent
 
 from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
-from web import QTWSWebView
 from config import QTWSConfig
 
 import pystray
@@ -12,7 +9,6 @@ from PIL import Image
 
 from threading import Thread
 import tempfile
-import os
 
 
 class TrayIcon(QTWSPlugin):    

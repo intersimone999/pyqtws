@@ -3,6 +3,7 @@ import glob
 import platform
 from pathlib import Path
 
+
 class QTWSFolderManager:
     HOME = None
     
@@ -17,8 +18,21 @@ class QTWSFolderManager:
             if platform.system().lower() == 'linux':
                 paths.append("/usr/share/silos-apps")
             
-            paths.append(os.path.join(__user_home, ".local", "share", "silos-apps"))
-            paths.append(os.path.dirname(os.path.realpath(__file__)))
+            paths.append(
+                os.path.join(
+                    __user_home, 
+                    ".local", 
+                    "share", 
+                    "silos-apps"
+                )
+            )
+            paths.append(
+                os.path.dirname(
+                    os.path.realpath(
+                        __file__
+                    )
+                )
+            )
         
         while QTWSFolderManager.HOME is None and len(paths) > 0:
             candidate = paths.pop(0)
@@ -38,7 +52,12 @@ class QTWSFolderManager:
     
     @staticmethod
     def all_apps():
-        return glob.iglob(os.path.join(QTWSFolderManager.apps_folder(), "*.qtws"))
+        return glob.iglob(
+            os.path.join(
+                QTWSFolderManager.apps_folder(), 
+                "*.qtws"
+            )
+        )
     
     @staticmethod
     def app_file(name):

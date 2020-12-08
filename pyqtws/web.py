@@ -1,12 +1,23 @@
 import webbrowser
-import subprocess
 import logging
+import os
 
 from PyQt5.Qt import Qt
-from PyQt5.QtCore import QPoint, QUrl, QDir, QFileInfo
-from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QMenu, QAction, QFileDialog, QProgressBar, QGridLayout, QPushButton, QLabel
+from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QDir
+from PyQt5.QtCore import QFileInfo
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QMenu, QAction
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QProgressBar, QPushButton, QLabel
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView, QWebEngineSettings, QWebEngineProfile
+from PyQt5.QtWebEngineWidgets import QWebEnginePage
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWebEngineWidgets import QWebEngineSettings
+from PyQt5.QtWebEngineWidgets import QWebEngineProfile
 
 from config import QTWSConfig
 from plugins import QTWSPluginManager
@@ -21,24 +32,52 @@ class QTWSWebView(QWebEngineView):
         
         if profile_name is None:
             self.profile = QWebEngineProfile.defaultProfile()
-            self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.app_id)
-            self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.app_id)
+            self.profile.setCachePath(
+                os.path.join(
+                    self.profile.cachePath(),
+                    self.config.app_id
+                )
+            )
+            self.profile.setPersistentStoragePath(
+                os.path.join(
+                    self.profile.persistentStoragePath(),
+                    self.config.app_id
+                )
+            )
         else:
             self.profile = QWebEngineProfile(profile_name)
-            self.profile.setCachePath(self.profile.cachePath() + "/" + self.config.app_id + "@" + profile_name)
-            self.profile.setPersistentStoragePath(self.profile.persistentStoragePath() + "/" + self.config.app_id + "@" + profile_name)
+            self.profile.setCachePath(
+                os.path.join(
+                    self.profile.cachePath(),
+                    self.config.app_id + "@" + profile_name
+                )
+            )
+            self.profile.setPersistentStoragePath(
+                os.path.join(
+                    self.profile.persistentStoragePath(),
+                    self.config.app_id + "@" + profile_name
+                )
+            )
             
-        self.profile.setHttpCacheMaximumSize(self.config.cache_mb * 1024 * 1024)
-        self.profile.downloadRequested.connect(lambda item: self.__download(item))
+        self.profile.setHttpCacheMaximumSize(
+            self.config.cache_mb * 1024 * 1024
+        )
+        self.profile.downloadRequested.connect(
+            lambda item: self.__download(item)
+        )
         
-        QTWSPluginManager.instance().each(lambda plugin: plugin.web_profile_setup(self.profile))
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.web_profile_setup(self.profile)
+        )
         
         self.webPage = QTWSWebPage(self.config, self.profile)
         self.setPage(self.webPage)
         
         self.permission_manager = QTWSPermissionManager(self.webPage)
         
-        QTWSPluginManager.instance().each(lambda plugin: plugin.web_engine_setup(self))
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.web_engine_setup(self)
+        )
 
         if self.config.menu_disabled:
             self.setContextMenuPolicy(Qt.NoContextMenu)
@@ -50,10 +89,22 @@ class QTWSWebView(QWebEngineView):
 
         self.urlChanged.connect(self.__url_changed)
 
-        self.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
-        self.settings().setAttribute(QWebEngineSettings.JavascriptCanOpenWindows, True)
-        self.settings().setAttribute(QWebEngineSettings.ScrollAnimatorEnabled, True)
-        self.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
+        self.settings().setAttribute(
+            QWebEngineSettings.FullScreenSupportEnabled, 
+            True
+        )
+        self.settings().setAttribute(
+            QWebEngineSettings.JavascriptCanOpenWindows, 
+            True
+        )
+        self.settings().setAttribute(
+            QWebEngineSettings.ScrollAnimatorEnabled, 
+            True
+        )
+        self.settings().setAttribute(
+            QWebEngineSettings.PluginsEnabled, 
+            True
+        )
         
         self.download_windows = []
         
@@ -61,25 +112,53 @@ class QTWSWebView(QWebEngineView):
         self.permission_manager.grant_permission(permission)
 
     def __create_actions(self):
-        self.__actionBack = QAction(QIcon.fromTheme("back"), "Back")
-        self.__actionBack.triggered.connect(lambda: self.back())
+        self.__actionBack = QAction(
+            QIcon.fromTheme("back"), 
+            "Back"
+        )
+        self.__actionBack.triggered.connect(
+            lambda: self.back()
+        )
 
-        self.__actionReload = QAction(QIcon.fromTheme("reload"), "Reload")
-        self.__actionReload.triggered.connect(lambda: self.reload())
+        self.__actionReload = QAction(
+            QIcon.fromTheme("reload"), 
+            "Reload"
+        )
+        self.__actionReload.triggered.connect(
+            lambda: self.reload()
+        )
 
-        self.__actionHome = QAction(QIcon.fromTheme("go-home"), "Home")
-        self.__actionHome.triggered.connect(lambda: self.setUrl(self.config.home))
+        self.__actionHome = QAction(
+            QIcon.fromTheme("go-home"),
+            "Home"
+        )
+        self.__actionHome.triggered.connect(
+            lambda: self.setUrl(self.config.home)
+        )
 
-        self.__actionShare = QAction(QIcon.fromTheme("emblem-shared"), "Share")
-        self.__actionShare.triggered.connect(self.__share)
+        self.__actionShare = QAction(
+            QIcon.fromTheme("emblem-shared"),
+            "Share"
+        )
+        self.__actionShare.triggered.connect(
+            self.__share
+        )
 
-        self.__actionQuit = QAction(QIcon.fromTheme("application-exit"), "Quit")
-        self.__actionQuit.triggered.connect(self.__quit)
+        self.__actionQuit = QAction(
+            QIcon.fromTheme("application-exit"),
+            "Quit"
+        )
+        self.__actionQuit.triggered.connect(
+            self.__quit
+        )
 
         self.__customActions = list()
         for menu_item in self.config.menu:
             if menu_item.icon:
-                action = QAction(QIcon.fromTheme(menu_item.icon), menu_item.title)
+                action = QAction(
+                    QIcon.fromTheme(menu_item.icon),
+                    menu_item.title
+                )
             else:
                 action = QAction(menu_item.title)
 
@@ -117,12 +196,24 @@ class QTWSWebView(QWebEngineView):
 
         self.menu.addAction(self.__actionQuit)
 
-        # Handles all the custom actions using the URL stored in the action's data field
+        # Handles all the custom actions using the 
+        # URL stored in the action's data field
         self.menu.triggered.connect(self.__menu_click)
         self.menu.popup(self.mapToGlobal(position))
         
     def __download(self, item):
-        path, _ = QFileDialog.getSaveFileName(self, "Save as", QDir(item.downloadDirectory()).filePath(item.downloadFileName()))
+        default_path = QDir(
+            item.downloadDirectory()
+        ).filePath(
+            item.downloadFileName()
+        )
+        
+        path, _ = QFileDialog.getSaveFileName(
+            self, 
+            "Save as", 
+            default_path
+        )
+        
         if path is None or len(path) == 0:
             item.cancel()
             return
@@ -135,7 +226,12 @@ class QTWSWebView(QWebEngineView):
 
     def __share(self):
         QApplication.instance().clipboard().setText(self.url().toString())
-        QMessageBox().information(self, 'Shared', 'Copied to the clipboard', QMessageBox.Ok)
+        QMessageBox().information(
+            self, 
+            'Shared', 
+            'Copied to the clipboard', 
+            QMessageBox.Ok
+        )
 
     def __quit(self):
         self.window.quit()
@@ -145,7 +241,9 @@ class QTWSWebView(QWebEngineView):
             self.setUrl(action.data())
 
     def __url_changed(self, status):
-        QTWSPluginManager.instance().each(lambda plugin: plugin.on_page_loaded(self.url()))
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.on_page_loaded(self.url())
+        )
 
 
 class QTWSWebPage(QWebEnginePage):
@@ -155,11 +253,21 @@ class QTWSWebPage(QWebEnginePage):
 
     def createWindow(self, t):
         fake_page = QWebEnginePage(self)
-        fake_page.urlChanged.connect(lambda url: self.__create_window_request(fake_page, url))
+        fake_page.urlChanged.connect(
+            lambda url: self.__create_window_request(
+                fake_page, 
+                url
+            )
+        )
 
         return fake_page
 
-    def acceptNavigationRequest(self, url: QUrl, request_type, is_main_frame: bool):
+    def acceptNavigationRequest(
+        self,
+        url: QUrl, 
+        request_type, 
+        is_main_frame: bool
+    ):
         if request_type != QWebEnginePage.NavigationTypeLinkClicked:
             return True
 
@@ -182,8 +290,14 @@ class QTWSWebPage(QWebEnginePage):
             return False
         
     def __open_outside_url(self, url):
-        silo_url = url.toString().replace("https://", "silo://").replace("http://", "silo://")
-        logging.info("Going outside because of {}: redirecting to {}".format(url.toString(), silo_url))
+        silo_url = url.toString()
+        silo_url = silo_url.replace("https://", "silo://")
+        silo_url = silo_url.replace("http://", "silo://")
+        
+        logging.info(
+            f"Going outside because of {url.toString()}:"
+            f"redirecting to {silo_url}"
+        )
         webbrowser.open(silo_url)
 
     def __check__blacklisted(self, url: QUrl):
@@ -219,15 +333,19 @@ class DownloadProgressWindow(QWidget):
         self.download = download
         self.__init_ui()
         
-        self.download.downloadProgress.connect(lambda done, total: self.__update(done, total))
-        self.download.finished.connect(lambda: self.__completed())
+        self.download.downloadProgress.connect(
+            lambda done, total: self.__update(done, total)
+        )
+        self.download.finished.connect(
+            lambda: self.__completed()
+        )
 
     def __init_ui(self):
         self.setWindowTitle("Download")
         
         self.layout = QGridLayout()
         
-        self.label        = QLabel(f"Downloading {self.download.path()}...", self)
+        self.label = QLabel(f"Downloading {self.download.path()}...", self)
         self.progress_bar = QProgressBar()
         
         self.layout.addWidget(self.label, 0, 0)
@@ -240,7 +358,7 @@ class DownloadProgressWindow(QWidget):
         self.show()
         
     def __build_action_buttons_group(self):
-        self.cancel_button  = QPushButton("Cancel")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(lambda: self.__on_cancel())
         
         group = QGridLayout()
