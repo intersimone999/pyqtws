@@ -30,38 +30,14 @@ class QTWSWebView(QWebEngineView):
         self.config = config
         self.window = window
         
-        if profile_name is None:
+        if profile_name is None or profile_name.lower() == 'default':
             self.profile = QWebEngineProfile.defaultProfile()
-            self.profile.setCachePath(
-                os.path.join(
-                    self.profile.cachePath(),
-                    self.config.app_id
-                )
-            )
-            self.profile.setPersistentStoragePath(
-                os.path.join(
-                    self.profile.persistentStoragePath(),
-                    self.config.app_id
-                )
-            )
         else:
             self.profile = QWebEngineProfile(profile_name)
-            self.profile.setCachePath(
-                os.path.join(
-                    self.profile.cachePath(),
-                    self.config.app_id + "@" + profile_name
-                )
-            )
-            self.profile.setPersistentStoragePath(
-                os.path.join(
-                    self.profile.persistentStoragePath(),
-                    self.config.app_id + "@" + profile_name
-                )
-            )
-            
-        self.profile.setHttpCacheMaximumSize(
-            self.config.cache_mb * 1024 * 1024
-        )
+        
+        maxCache = self.config.cache_mb * 1024 * 1024
+        self.profile.setHttpCacheMaximumSize(maxCache)
+        
         self.profile.downloadRequested.connect(
             lambda item: self.__download(item)
         )
@@ -72,7 +48,6 @@ class QTWSWebView(QWebEngineView):
         
         self.webPage = QTWSWebPage(self.config, self.profile)
         self.setPage(self.webPage)
-        
         self.permission_manager = QTWSPermissionManager(self.webPage)
         
         QTWSPluginManager.instance().each(
@@ -248,7 +223,7 @@ class QTWSWebView(QWebEngineView):
 
 class QTWSWebPage(QWebEnginePage):
     def __init__(self, config: QTWSConfig, profile: QWebEngineProfile):
-        super().__init__(profile)
+        super().__init__(profile, None)
         self.config = config
 
     def createWindow(self, t):

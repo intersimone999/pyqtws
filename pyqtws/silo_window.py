@@ -39,7 +39,7 @@ class QTWSMainWindow(QWidget):
         self.config = QTWSConfig(config_filename, app_id)
         self.app_settings = QSettings(self.config.name, "Save State", self)
         
-        self.profile_name = profile
+        self._profile_id = profile
         
         QTWSPluginManager.instance().load_plugins(self.config)
         self.__init_ui(url)
@@ -65,6 +65,9 @@ class QTWSMainWindow(QWidget):
         
     def quit(self):
         self.__action_quit()
+    
+    def profile_id(self):
+        return self._profile_id
         
     def set_always_on_top(self, always_on_top: bool):
         self.setWindowFlag(Qt.WindowStaysOnTopHint, always_on_top)
@@ -96,7 +99,7 @@ class QTWSMainWindow(QWidget):
         self.enter_event_handler.set_callback(callback)
 
     def __init_ui(self, url: str = None):
-        self.setWindowTitle(self.config.name)
+        self.setWindowTitle(f"{self.config.name}")
 
         if not url or not self.config.in_scope(url):
             url = self.config.home
@@ -106,7 +109,7 @@ class QTWSMainWindow(QWidget):
             
         url = url.replace('silo://', 'https://')
 
-        self.web = QTWSWebView(self.config, self, self.profile_name)
+        self.web = QTWSWebView(self.config, self, self._profile_id)
         self.web.load(QUrl(url))
 
         layout = QVBoxLayout()

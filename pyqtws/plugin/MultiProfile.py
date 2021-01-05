@@ -1,5 +1,6 @@
 from config import QTWSConfig
 from plugins import QTWSPlugin
+from PyQt5.Qt import Qt, QShortcut
 from PyQt5.QtCore import QSettings, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget
@@ -13,39 +14,115 @@ import hashlib
 
 
 class MultiProfile(QTWSPlugin):
+    @staticmethod
+    def switch_profile(profile, app_id):
+        if profile.id == 'default':
+            webbrowser.open(
+                f"silo://start#{app_id}"
+            )
+        elif profile.id == 'anonymous':
+            webbrowser.open(
+                f"silo://@start#{app_id}"
+            )
+        else:
+            webbrowser.open(
+                f"silo://{profile.id}@start#{app_id}"
+            )
+    
     def __init__(self, config):
         super().__init__("MultiProfile")
         self.config = config
-        self.profile_chooser = None
+        self.profile_manager = None
     
     def window_setup(self, window):
         self.window = window
         self.settings = QSettings(self.config.name, "MultiProfile", window)
+        self.__load_profiles()
+        
+        window.setWindowTitle(f"{self.config.name} @ {self.active_profile.name}")
     
     def add_menu_items(self, menu: QMenu):
-        self.switch_profile_action = QAction(
+        self.switch_profile_actions = []
+        action = QAction(
+            QIcon.fromTheme("view-hidden"),
+            f"New anonymous window"
+        )
+        
+        action.triggered.connect(
+            lambda: MultiProfile.switch_profile(Profile("anonymous", "Anonymous"), self.config.app_id)
+        )
+        
+        menu.addAction(action)
+        self.switch_profile_actions.append(action)
+        
+        for profile in self.profiles:
+            action = ProfileAction(profile, self.config.app_id)
+            menu.addAction(action)
+            self.switch_profile_actions.append(action)
+        
+        self.profile_manager_action = QAction(
             QIcon.fromTheme("user"),
-            "Switch profile"
+            "Profile manager"
         )
-        self.switch_profile_action.triggered.connect(
-            lambda: self.__switch_profile()
+        self.profile_manager_action.triggered.connect(
+            lambda: self.__show_profile_manager()
         )
-        menu.addAction(self.switch_profile_action)
+        menu.addAction(self.profile_manager_action)
     
-    def __switch_profile(self):
-        if self.profile_chooser is None:
-            self.profile_chooser = ProfileChooserWindow(
+    def register_shortcuts(self, window):
+        self.__keyCtrlP = QShortcut(window)
+        self.__keyCtrlP.setKey(Qt.CTRL + Qt.Key_P)
+        self.__keyCtrlP.activated.connect(lambda: self.__show_profile_manager())
+    
+    def __show_profile_manager(self):
+        if self.profile_manager is None:
+            self.profile_manager = ProfileManagerWindow(
                 self, 
                 self.config, 
-                self.settings
+                self.settings,
+                self.profiles,
+                self.active_profile
             )
     
-    def unregister_chooser_window(self):
-        self.profile_chooser = None
+    def __load_profiles(self):
+        profiles_str = self.settings.value("profiles")
+        if profiles_str is not None and profiles_str:
+            profiles = profiles_str.split(";")
+            self.profiles = [Profile.deserialize(p) for p in profiles]
+        else:
+            self.profiles = []
+        
+        default = self.window.profile_id() is None or \
+                    self.window.profile_id().lower() == 'default'
+        
+        self.active_profile = None
+        
+        if default:
+            self.active_profile = Profile.default()
+        else:
+            for profile in self.profiles:
+                if profile.id == self.window.profile_id():
+                    self.active_profile = profile
+        
+        if self.active_profile is None:
+            if self.window.profile_id() != '':
+                profile_name = f"Custom ({self.window.profile_id()})"
+            else:
+                profile_name = "Anonymous"
+            
+            print(self.window.profile_id())
+            self.active_profile = Profile(
+                self.window.profile_id(), 
+                profile_name
+            )
+    
+    def unregister_profile_manager(self):
+        self.profile_manager = None
 
 
 class Profile:
     MAX_NAME_SIZE = 20
+    DEFAULT = None
     
     @staticmethod
     def deserialize(string):
@@ -53,6 +130,13 @@ class Profile:
         id = parts[0]
         name = parts[1]
         return Profile(id, name)
+    
+    @staticmethod
+    def default():
+        if Profile.DEFAULT is None:
+            Profile.DEFAULT = Profile('Default', 'Default')
+        
+        return Profile.DEFAULT
         
     def __init__(self, id, name):
         self.id = id
@@ -62,10 +146,35 @@ class Profile:
         return f"{self.id}:{self.name}"
 
 
+class ProfileAction(QAction):
+    def __init__(self, profile, app_id):
+        self.profile = profile
+        self.app_id = app_id
+        
+        super().__init__(
+            QIcon.fromTheme("user"),
+            f"Open as {profile.name}"
+        )
+        
+        self.triggered.connect(
+            lambda: self.switch()
+        )
+    
+    def switch(self):
+        MultiProfile.switch_profile(self.profile, self.app_id)
+
 class ProfileWidget(QWidget):
-    def __init__(self, profile_chooser, config, profile, icon, erasable=False):
+    def __init__(
+        self, 
+        profile_manager, 
+        config, 
+        profile, 
+        icon,
+        erasable=False,
+        active=False
+    ):
         super().__init__()
-        self.profile_chooser = profile_chooser
+        self.profile_manager = profile_manager
         
         self.config = config
         self.profile = profile
@@ -88,6 +197,7 @@ class ProfileWidget(QWidget):
         self.button.setStyleSheet(
             "QPushButton { text-align: left; padding: 8px; }"
         )
+        self.button.setEnabled(not active)
         self.clicked = self.button.clicked
         self.clicked.connect(lambda: self.switch_profile())
         self.layout.addWidget(self.button, 0, 2)
@@ -107,38 +217,21 @@ class ProfileWidget(QWidget):
         self.show()
     
     def switch_profile(self):
-        if self.profile.id == 'default':
-            webbrowser.open(
-                f"silo://start#{self.config.app_id}"
-            )
-        elif self.profile.id == 'anonymous':
-            webbrowser.open(
-                f"silo://@start#{self.config.app_id}"
-            )
-        else:
-            webbrowser.open(
-                f"silo://{self.profile.id}@start#{self.config.app_id}"
-            )
-            
-        self.profile_chooser.close()
+        MultiProfile.switch_profile(self.profile, self.config.app_id)
+        self.profile_manager.close()
     
     def delete(self):
-        self.profile_chooser.delete_profile(self)
+        self.profile_manager.delete_profile(self)
 
 
-class ProfileChooserWindow(QWidget):
-    def __init__(self, plugin, config, settings):
+class ProfileManagerWindow(QWidget):
+    def __init__(self, plugin, config, settings, profiles, active):
         super().__init__()
         self.plugin = plugin
         self.config = config
         self.settings = settings
-        
-        profiles_str = settings.value("profiles")
-        if profiles_str is not None and profiles_str:
-            profiles = profiles_str.split(";")
-            self.profiles = [Profile.deserialize(p) for p in profiles]
-        else:
-            self.profiles = []
+        self.profiles = profiles
+        self.active_profile = active
         
         self.__init_ui()
     
@@ -153,16 +246,19 @@ class ProfileChooserWindow(QWidget):
         
         self.layout = QGridLayout()
         
+        default_active = (self.active_profile == Profile.default())
         widget = ProfileWidget(
-            profile_chooser=self, 
+            profile_manager=self, 
             config=self.config, 
-            profile=Profile("default", "Default"), 
-            icon=QIcon.fromTheme("user-home")
+            profile=Profile.default(), 
+            icon=QIcon.fromTheme("user-home"),
+            erasable=False,
+            active=default_active
         )
         self.layout.addWidget(widget)
         
         widget = ProfileWidget(
-            profile_chooser=self, 
+            profile_manager=self, 
             config=self.config, 
             profile=Profile("anonymous", "Anonymous"), 
             icon=QIcon.fromTheme("view-hidden")
@@ -170,12 +266,14 @@ class ProfileChooserWindow(QWidget):
         self.layout.addWidget(widget)
         
         for profile in self.profiles:
+            active = self.active_profile == profile
             widget = ProfileWidget(
-                profile_chooser=self,
+                profile_manager=self,
                 config=self.config,
                 profile=profile,
                 icon=QIcon.fromTheme("user"),
-                erasable=True
+                erasable=(not active),
+                active=active
             )
             self.layout.addWidget(widget)
         
@@ -239,7 +337,7 @@ class ProfileChooserWindow(QWidget):
                 self.layout.removeWidget(self.add_button)
                 self.add_button.hide()
                 widget = ProfileWidget(
-                    profile_chooser=self, 
+                    profile_manager=self, 
                     config=self.config, 
                     profile=profile, 
                     icon=QIcon.fromTheme("user"), 
@@ -254,7 +352,7 @@ class ProfileChooserWindow(QWidget):
         self.settings.setValue("profiles", profiles)
     
     def closeEvent(self, event):
-        self.plugin.unregister_chooser_window()
+        self.plugin.unregister_profile_manager()
 
 
 def instance(config: QTWSConfig, params: dict):
