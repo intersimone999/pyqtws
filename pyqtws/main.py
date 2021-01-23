@@ -2,6 +2,8 @@
 
 import sys
 import subprocess
+import logging
+import time
 
 from argparse import ArgumentParser
 from urllib.parse import urlparse
@@ -79,7 +81,14 @@ if __name__ == '__main__':
     parser.add_argument(
         '-A', '--path', 
         help='prints the path to the app folder in the local system', 
-        action='store_const', required=False, const='c')
+        action='store_const', required=False, const='c'
+    )
+    
+    parser.add_argument(
+        '--debug', 
+        help='enables debugging', 
+        action='store_const', required=False, const='c'
+    )
     
     parser.add_argument(
         'url', 
@@ -90,6 +99,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     app_id = args.app
     profile = args.profile
+    
+    if args.debug:
+        logname = f"silo.{time.time()}.log"
+        print(f"Running in debug mode. Saving info to {logname}")
+        logging.basicConfig(filename=logname)
+        logging.getLogger().setLevel(logging.DEBUG)
     
     try:
         if args.root:
