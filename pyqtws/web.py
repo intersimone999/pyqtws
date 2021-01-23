@@ -1,6 +1,7 @@
 import webbrowser
 import logging
 import os
+import time
 
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QPoint
@@ -225,6 +226,8 @@ class QTWSWebPage(QWebEnginePage):
     def __init__(self, config: QTWSConfig, profile: QWebEngineProfile):
         super().__init__(profile, None)
         self.config = config
+        self._last_request = None
+        self._last_request_time = None
 
     def createWindow(self, t):
         fake_page = QWebEnginePage(self)
@@ -269,11 +272,20 @@ class QTWSWebPage(QWebEnginePage):
         silo_url = silo_url.replace("https://", "silo://")
         silo_url = silo_url.replace("http://", "silo://")
         
-        logging.info(
-            f"Going outside because of {url.toString()}:"
-            f"redirecting to {silo_url}"
-        )
-        webbrowser.open(silo_url)
+        base_url = f"{url.scheme()}://{url.host()}{url.path()}"
+        if self._last_request != base_url or self._last_request_time - time.time() > 3:
+            logging.info(
+                f"Going outside because of {url.toString()}: "
+                f"redirecting to {silo_url}"
+            )
+            webbrowser.open(silo_url)
+        else:
+            logging.info(
+                f"Avoiding repeated opening of the same document"
+            )
+        
+        self._last_request = base_url
+        self._last_request_time = time.time()
 
     def __check__blacklisted(self, url: QUrl):
         for plugin in QTWSPluginManager.instance().plugins:
