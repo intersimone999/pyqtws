@@ -3,7 +3,7 @@
 import setuptools
 
 setuptools.setup(name='pyqtws',
-                 version='0.1.54',
+                 version='0.1.55',
                  scripts=["silo"],
                  description='Standalone website wrapper',
                  url='http://github.com/intersimone999/pyqtws',
