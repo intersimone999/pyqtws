@@ -198,7 +198,12 @@ class QTWSWebView(QWebEngineView):
         item.setDownloadDirectory(info.dir().path())
         item.setDownloadFileName(info.fileName())
         item.accept()
-        self.download_windows.append(DownloadProgressWindow(item))
+        self.download_windows.append(
+            DownloadProgressWindow(
+                item, 
+                info.dir().path() + "/" + info.fileName()
+            )
+        )
 
     def __share(self):
         QApplication.instance().clipboard().setText(self.url().toString())
@@ -314,10 +319,11 @@ class QTWSWebPage(QWebEnginePage):
 
 
 class DownloadProgressWindow(QWidget):
-    def __init__(self, download):
+    def __init__(self, download, result_path):
         super().__init__()
         
         self.download = download
+        self.result_path = result_path
         self.__init_ui()
         
         self.download.downloadProgress.connect(
@@ -348,11 +354,11 @@ class DownloadProgressWindow(QWidget):
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(lambda: self.__on_cancel())
         
-        group = QGridLayout()
-        group.addWidget(self.cancel_button, 0, 0)
+        self.action_buttons_layout = QGridLayout()
+        self.action_buttons_layout.addWidget(self.cancel_button, 0, 0)
         
         result = QWidget()
-        result.setLayout(group)
+        result.setLayout(self.action_buttons_layout)
         
         return result
     
@@ -362,7 +368,12 @@ class DownloadProgressWindow(QWidget):
     
     def __completed(self):
         self.label.setText("Download completed!")
-        self.cancel_button.setText("Close")
+        self.cancel_button.setText("Open")
+        self.cancel_button.clicked.connect(lambda: self.__on_open())
+    
+    def __on_open(self):
+        outpath = f"file://{self.result_path}"
+        webbrowser.open(outpath)
     
     def __on_cancel(self):
         if not self.download.isFinished():
