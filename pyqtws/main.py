@@ -17,6 +17,7 @@ from options_window import QTWSOptionsWindow
 from chooser_window import QTWSChooserWindow
 from config import QTWSConfig
 
+import browser as external_browser
 
 def __app_path():
     print(QTWSFolderManager.apps_folder())
@@ -135,16 +136,7 @@ if __name__ == '__main__':
             app_id, profile = __find_app_by_url(args.url)
             if not app_id:
                 url = args.url.replace("silo://", "https://")
-                silo_options = QSettings("silos", "Options")
-                default_browser = silo_options.value("browser/defaultBrowser")
-                if default_browser is None:
-                    app = QApplication(["silos"])
-                    ex = QTWSOptionsWindow(True)
-                    app.exec_()
-                
-                silo_options = QSettings("silos", "Options")
-                default_browser = silo_options.value("browser/defaultBrowser")
-                subprocess.call([default_browser, url])
+                external_browser.open(url)
                 sys.exit(0)
         else:
             app_id = "appChooser"

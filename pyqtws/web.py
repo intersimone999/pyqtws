@@ -24,6 +24,8 @@ from config import QTWSConfig
 from plugins import QTWSPluginManager
 from permissions import QTWSPermissionManager
 
+import browser as external_browser
+
 
 class QTWSWebView(QWebEngineView):
     def __init__(self, config: QTWSConfig, window, profile_name: str = None):
@@ -119,6 +121,14 @@ class QTWSWebView(QWebEngineView):
         self.__actionShare.triggered.connect(
             self.__share
         )
+        
+        self.__actionOpenBrowser = QAction(
+            QIcon.fromTheme("internet-web-browser"),
+            "Open in the browser"
+        )
+        self.__actionOpenBrowser.triggered.connect(
+            self.__open_in_browser
+        )
 
         self.__actionQuit = QAction(
             QIcon.fromTheme("application-exit"),
@@ -154,6 +164,7 @@ class QTWSWebView(QWebEngineView):
         self.menu.addAction(self.__actionReload)
         self.menu.addAction(self.__actionHome)
         self.menu.addAction(self.__actionShare)
+        self.menu.addAction(self.__actionOpenBrowser)
 
         if len(self.__customActions) > 0:
             self.menu.addSeparator()
@@ -213,6 +224,9 @@ class QTWSWebView(QWebEngineView):
             'Copied to the clipboard', 
             QMessageBox.Ok
         )
+        
+    def __open_in_browser(self):
+        external_browser.open(self.url().toString())
 
     def __quit(self):
         self.window.quit()
