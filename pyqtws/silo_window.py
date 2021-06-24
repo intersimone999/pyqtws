@@ -119,6 +119,7 @@ class QTWSMainWindow(QWidget):
         self.setLayout(layout)
 
         self.setWindowIcon(QIcon(self.config.icon))
+        QApplication.instance().setDesktopFileName("silo-" + self.config.app_id)
         self.show()
 
         self.maximized = self.isMaximized()
