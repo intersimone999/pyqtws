@@ -12,6 +12,12 @@ class QTWSPlugin:
         """
         pass
     
+    def web_profile_candidate(self, lst):
+        """
+        Abstract method that allows to handle the candidate web profiles in the list
+        """
+        pass
+    
     def web_profile_setup(self, profile):
         """
         Abstract method that allows to setup the profile of the web engine

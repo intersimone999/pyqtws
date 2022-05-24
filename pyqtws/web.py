@@ -33,6 +33,14 @@ class QTWSWebView(QWebEngineView):
         self.config = config
         self.window = window
         
+        candidate_profiles = [profile_name]
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.web_profile_candidate(candidate_profiles)
+        )
+        
+        if len(candidate_profiles) >= 1:
+            profile_name = candidate_profiles[0]
+        
         if profile_name is None or profile_name.lower() == 'default':
             self.profile = QWebEngineProfile.defaultProfile()
         else:
