@@ -7,9 +7,7 @@ from config import QTWSConfig
 import pystray
 from PIL import Image
 
-from threading import Thread
 import tempfile
-
 
 class TrayIcon(QTWSPlugin):    
     def __init__(self, config: QTWSConfig):
@@ -41,24 +39,20 @@ class TrayIcon(QTWSPlugin):
         )
         
         self.tray_icon.visible = True
-        
-        self.icon_thread = Thread(target=self.__run_thread)
-        self.icon_thread.start()
-        
+        self.tray_icon.run_detached()
+                
     def close_event(self, window: QTWSMainWindow, event: QCloseEvent):
         self.__toggle_visibility()
         event.ignore()
 
     def window_setup(self, window: QTWSMainWindow):
         self.window = window
-        
-    def __run_thread(self):
-        self.tray_icon.run()
-    
+            
     def __toggle_visibility(self):
         self.window.setVisible(not self.window.isVisible())
     
     def __quit(self):
+        self.tray_icon.stop()
         self.window.quit()
 
 
