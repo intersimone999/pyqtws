@@ -16,6 +16,7 @@ from silo_window import QTWSMainWindow
 from options_window import QTWSOptionsWindow
 from chooser_window import QTWSChooserWindow
 from config import QTWSConfig
+from plugins import QTWSPluginManager
 
 import browser as external_browser
 
@@ -154,12 +155,16 @@ if __name__ == '__main__':
         else:
             app_path = QTWSFolderManager.app_file(app_id)
         
-        config = QTWSConfig(app_path)
+        config = QTWSConfig(app_path, app_id)
+        QTWSPluginManager.instance().load_plugins(config)
         
         app = QApplication([f"silos-{app_id}"])
+        QTWSPluginManager.instance().each(
+            lambda plugin: plugin.app_setup(app)
+        )
+        
         ex = QTWSMainWindow(app_id, app_path, args.url, profile=profile)
         sys.exit(app.exec_())
-
     else:
         print("Invalid silo command")
         sys.exit(-1)

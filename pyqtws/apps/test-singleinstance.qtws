@@ -1,0 +1,17 @@
+{
+        "name": "Google Calendar",
+        "scope": ["https\\:\\/\\/calendar\\.google\\.com"],
+        "plugins": [
+            {"name": "GoogleAuthentication"},
+            {"name": "WebRTC"},
+            {"name": "Notifications"},
+            {"name": "ChangeUserAgent", "user-agent": "chrome"},
+            { "name": "TrayIcon" },
+            {"name": "SingleInstance"}
+        ],
+        "home": "https://calendar.google.com/",
+        "icon": "icons/google-calendar.svg",
+        "saveSession": false,
+        "menuDisabled": false,
+        "download": true
+}

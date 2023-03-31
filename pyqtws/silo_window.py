@@ -41,7 +41,6 @@ class QTWSMainWindow(QWidget):
         
         self._profile_id = profile
         
-        QTWSPluginManager.instance().load_plugins(self.config)
         self.__init_ui(url)
         self.__init_web_view()
         self.__read_settings()

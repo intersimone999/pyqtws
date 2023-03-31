@@ -5,6 +5,12 @@ from PyQt5.Qt import QUrl
 class QTWSPlugin:
     def __init__(self, name: str):
         self.name = name
+    
+    def app_setup(self, window):
+        """
+        Abstract method that allows to setup the QT app as soon as it is created
+        """
+        pass
 
     def web_engine_setup(self, web):
         """

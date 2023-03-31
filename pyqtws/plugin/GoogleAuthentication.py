@@ -13,7 +13,8 @@ class GoogleAuthentication(QTWSPlugin):
         if url.startswith("https://accounts.google.com/signin") or \
                 url.startswith("https://accounts.google.com/AddSession") or \
                 url.startswith("https://accounts.google.com/ServiceLogin") or \
-                url.startswith("https://accounts.google.com/o/oauth2"):
+                url.startswith("https://accounts.google.com/o/oauth2") or \
+                url.startswith("https://accounts.google.com/v3/signin"):
             return True
 
         return False
