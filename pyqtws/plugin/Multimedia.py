@@ -138,7 +138,7 @@ class MultimediaPluginMPRIS2(Object):
         global qtws_app_id
         self.bus = dbus.SessionBus()
         rnd = random.randint(0, 9999)
-        self.service_name = f"org.mpris.MediaPlayer2.qtws_{name}{rnd}"
+        self.service_name = f"org.mpris.MediaPlayer2.silos_{name}{rnd}"
         
         bus_name = dbus.service.BusName(
             self.service_name,
@@ -149,7 +149,7 @@ class MultimediaPluginMPRIS2(Object):
         self.window = window
         self.web = web
 
-        self.track_path = "/it/datasound/mpris/" + str(random.randint(0, 9999))
+        self.track_path = "/it/silos/mpris/" + str(random.randint(0, 9999))
         self.track = Object(bus_name, self.track_path)
 
         self.properties = dict()
