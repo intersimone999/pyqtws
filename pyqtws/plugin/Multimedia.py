@@ -18,7 +18,7 @@ import dbus.mainloop.glib
 
 
 class Multimedia(QTWSPlugin):
-    def __init__(self, config: QTWSConfig):
+    def __init__(self, config: QTWSConfig, params: dict):
         super().__init__("Multimedia")
         self.web = None
         self.window = None
@@ -27,6 +27,10 @@ class Multimedia(QTWSPlugin):
         self.config = config
         self.__mpris2 = None
         self.terminated = False
+        if 'previous-button-class' in params:
+            self.previous_button_class = params['previous-button-class']
+        else:
+            self.previous_button_class = None
 
     def window_setup(self, window: QTWSMainWindow):
         self.window = window
@@ -105,7 +109,8 @@ class Multimedia(QTWSPlugin):
             app_id=self.config.app_id,
             name=self.config.name.replace(" ", ""),
             window=self.window,
-            web=self.web
+            web=self.web,
+            prev=self.previous_button_class
         )
 
         self.__metadata = dict()
@@ -134,11 +139,13 @@ class MultimediaPluginMPRIS2(Object):
                  app_id: str, 
                  name: str, 
                  window: QTWSMainWindow, 
-                 web: QTWSWebView):
+                 web: QTWSWebView,
+                 prev: str):
         global qtws_app_id
         self.bus = dbus.SessionBus()
         rnd = random.randint(0, 9999)
         self.service_name = f"org.mpris.MediaPlayer2.silos_{name}{rnd}"
+        self.prev = prev
         
         bus_name = dbus.service.BusName(
             self.service_name,
@@ -179,8 +186,8 @@ class MultimediaPluginMPRIS2(Object):
         player_interface["MinimumRate"] = 0.01
         player_interface["MaximumRate"] = 32.0
         player_interface["Position"] = 0
-        player_interface["CanGoNext"] = False
-        player_interface["CanGoPrevious"] = False
+        player_interface["CanGoNext"] = True
+        player_interface["CanGoPrevious"] = (self.prev is not None)
         player_interface["CanPlay"] = True
         player_interface["CanPause"] = True
         player_interface["CanSeek"] = True
@@ -261,10 +268,10 @@ class MultimediaPluginMPRIS2(Object):
         out_signature=''
     )
     def Next(self):
-        """
-        MPRIS method not implemented yet
-        """
-        pass
+        js = "document.getElementsByTagName(\"video\")[0].currentTime = " \
+            "document.getElementsByTagName(\"video\")[0].duration"
+        self.web.page().runJavaScript(js)
+        self.refresh_properties()
 
     @dbus.service.method(
         MPRIS_PLAYER_INTERFACE,
@@ -272,10 +279,9 @@ class MultimediaPluginMPRIS2(Object):
         out_signature=''
     )
     def Previous(self):
-        """
-        MPRIS method not implemented yet
-        """
-        pass
+        js = f"document.getElementsByClassName(\"{self.prev}\")[0].click()"
+        self.web.page().runJavaScript(js)
+        self.refresh_properties()
 
     @dbus.service.method(
         MPRIS_PLAYER_INTERFACE,
@@ -424,13 +430,13 @@ class MultimediaPluginMPRIS2(Object):
             js_playing = f"{video_elements}[0].paused == false"
             self.web.page().runJavaScript(js_playing, self.__set_is_playing)
 
-            js_position = f"{video_elements}[0].getCurrentTime()"
+            js_position = f"{video_elements}[0].currentTime"
             self.web.page().runJavaScript(js_position, self.__set_position)
 
             js_rate = f"{video_elements}[0].playbackRate"
             self.web.page().runJavaScript(js_rate, self.__set_rate)
 
-            js_len = f"{video_elements}[0].getDuration()"
+            js_len = f"{video_elements}[0].duration"
             self.web.page().runJavaScript(js_len, self.__set_metadata_length)
         else:
             self.Set(self.MPRIS_PLAYER_INTERFACE, "PlaybackStatus", "Stopped")
@@ -470,4 +476,4 @@ class MultimediaPluginMPRIS2(Object):
 
 
 def instance(config: QTWSConfig, params: dict):
-    return Multimedia(config)
+    return Multimedia(config, params)
