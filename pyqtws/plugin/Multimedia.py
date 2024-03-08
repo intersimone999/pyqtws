@@ -103,7 +103,7 @@ class Multimedia(QTWSPlugin):
 
         self.__mpris2 = MultimediaPluginMPRIS2(
             app_id=self.config.app_id,
-            name=self.config.name,
+            name=self.config.name.replace(" ", ""),
             window=self.window,
             web=self.web
         )
