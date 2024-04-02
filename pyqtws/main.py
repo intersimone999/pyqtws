@@ -8,8 +8,8 @@ import time
 from argparse import ArgumentParser
 from urllib.parse import urlparse
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5.QtCore import QSettings
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtCore import QSettings
 
 from folder_manager import QTWSFolderManager, NoHomeFolderError
 from silo_window import QTWSMainWindow
@@ -119,10 +119,10 @@ if __name__ == '__main__':
             None, 
             'No apps available', 
             'No app paths available on your system.', 
-            QMessageBox.Ok
+            QMessageBox.StandardButton.Ok
         )
         ex = QTWSOptionsWindow()
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
     
     if args.path:
         sys.exit(__app_path())
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     if args.options:
         app = QApplication(["silos"])
         ex = QTWSOptionsWindow()
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
 
     if not app_id:
         if args.url:
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     if app_id and app_id.lower() == "appchooser":
         app = QApplication(["silos"])
         ex = QTWSChooserWindow(QTWSFolderManager.apps_folder())
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
 
     if app_id:
         app_id = app_id.lower()
@@ -164,7 +164,7 @@ if __name__ == '__main__':
         )
         
         ex = QTWSMainWindow(app_id, app_path, args.url, profile=profile)
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
     else:
         print("Invalid silo command")
         sys.exit(-1)

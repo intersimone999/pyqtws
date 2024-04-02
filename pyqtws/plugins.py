@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QMenu
-from PyQt5.Qt import QUrl
+from PyQt6.QtWidgets import QMenu
+from PyQt6.QtCore import QUrl
 
 
 class QTWSPlugin:

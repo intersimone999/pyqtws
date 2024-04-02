@@ -1,13 +1,13 @@
 from config import QTWSConfig
 from plugins import QTWSPlugin
-from PyQt5.Qt import Qt, QShortcut
-from PyQt5.QtCore import QSettings, QSize
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QMenu, QAction
-from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QInputDialog, QMessageBox
+from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QSettings, QSize
+from PyQt6.QtGui import QShortcut, QAction, QIcon
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QMenu
+from PyQt6.QtWidgets import QPushButton, QLineEdit, QLabel
+from PyQt6.QtWidgets import QGridLayout
+from PyQt6.QtWidgets import QInputDialog, QMessageBox
 
 import webbrowser
 import hashlib
@@ -71,7 +71,7 @@ class MultiProfile(QTWSPlugin):
     
     def register_shortcuts(self, window):
         self.__keyCtrlP = QShortcut(window)
-        self.__keyCtrlP.setKey(Qt.CTRL + Qt.Key_P)
+        self.__keyCtrlP.setKey("Ctrl+P")
         self.__keyCtrlP.activated.connect(lambda: self.__show_profile_manager())
     
     def __show_profile_manager(self):
@@ -294,7 +294,7 @@ class ProfileManagerWindow(QWidget):
             self, 
             "Create profile", 
             "Profile name:", 
-            QLineEdit.Normal, 
+            QLineEdit.EchoMode.Normal, 
             ""
         )
         profile_name = profile_name.strip()
@@ -306,7 +306,7 @@ class ProfileManagerWindow(QWidget):
                     'Name not allowed', 
                     f'Empty names or names longer than '
                     f'{Profile.MAX_NAME_SIZE} characters are not allowed.', 
-                    QMessageBox.Ok
+                    QMessageBox.StandardButton.Ok
                 )
                 return
             if ':' in profile_name or \
@@ -317,7 +317,7 @@ class ProfileManagerWindow(QWidget):
                     self, 
                     'Symbol not allowed', 
                     '":", ";", "@", and "=" are not allowed here.', 
-                    QMessageBox.Ok
+                    QMessageBox.StandardButton.Ok
                 )
                 return
             elif profile_name in map(lambda e: e.name, self.profiles):
@@ -325,7 +325,7 @@ class ProfileManagerWindow(QWidget):
                     self, 
                     'Profile already existing', 
                     'A profile with this name already exists.', 
-                    QMessageBox.Ok
+                    QMessageBox.StandardButton.Ok
                 )
                 return
             else:

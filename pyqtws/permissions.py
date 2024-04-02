@@ -1,4 +1,4 @@
-from PyQt5.QtWebEngineWidgets import QWebEnginePage
+from PyQt6.QtWebEngineCore import QWebEnginePage
 
 
 class QTWSPermissionManager:
@@ -19,11 +19,11 @@ class QTWSPermissionManager:
             self.web_page.setFeaturePermission(
                 url,
                 permission,
-                QWebEnginePage.PermissionGrantedByUser
+                QWebEnginePage.PermissionPolicy.PermissionGrantedByUser
             )
         else:
             self.web_page.setFeaturePermission(
                 url,
                 permission,
-                QWebEnginePage.PermissionDeniedByUser
+                QWebEnginePage.PermissionPolicy.PermissionDeniedByUser
             )

@@ -1,5 +1,5 @@
-from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile
+from PyQt6.QtWidgets import QApplication
 
 from dbus.service import Object
 

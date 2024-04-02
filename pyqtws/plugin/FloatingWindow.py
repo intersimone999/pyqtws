@@ -1,6 +1,6 @@
-from PyQt5.QtGui import QIcon
-from PyQt5.Qt import QShortcut, Qt
-from PyQt5.QtWidgets import QAction, QMenu, QApplication, QMessageBox
+from PyQt6.QtGui import QIcon, QShortcut, QAction
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMenu, QApplication, QMessageBox
 
 from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
@@ -72,7 +72,7 @@ class FloatingWindow(QTWSPlugin):
             box = QMessageBox()
             box.setWindowTitle("Floating mode activated")
             box.setText("Just close the window to disable the floating mode.")
-            box.setIcon(QMessageBox.Information)
+            box.setIcon(QMessageBox.Icon.Information)
             box.exec_()
             self.message_box_shown = True
     

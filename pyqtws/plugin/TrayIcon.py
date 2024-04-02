@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QImage, QCloseEvent
+from PyQt6.QtGui import QImage, QCloseEvent
 
 from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin

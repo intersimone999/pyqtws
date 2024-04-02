@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, QMessageBox
-from PyQt5.QtGui import QIcon
+from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QMessageBox
+from PyQt6.QtGui import QIcon
 
 from config import QTWSConfig
 
@@ -52,7 +52,7 @@ class QTWSChooserWindow(QWidget):
                 self, 
                 'No apps available', 
                 'No apps installed. Please install at least an app.', 
-                QMessageBox.Ok
+                QMessageBox.StandardButton.Ok
             )
             sys.exit(0)
 

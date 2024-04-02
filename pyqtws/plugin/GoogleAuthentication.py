@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QUrl
+from PyQt6.QtCore import QUrl
 
 from config import QTWSConfig
 from plugins import QTWSPlugin

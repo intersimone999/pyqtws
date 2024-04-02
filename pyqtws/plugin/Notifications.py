@@ -1,4 +1,4 @@
-from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile
+from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile
 
 from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin
@@ -22,7 +22,7 @@ class Notifications(QTWSPlugin):
 
     def web_engine_setup(self, web: QTWSWebView):
         self.web = web
-        self.web.grant_permission(QWebEnginePage.Notifications)
+        self.web.grant_permission(QWebEnginePage.Feature.Notifications)
     
     def web_profile_setup(self, profile: QWebEngineProfile):
         Notifier.set_profile(profile)

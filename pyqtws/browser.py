@@ -1,7 +1,7 @@
 import subprocess
 import logging
 
-from PyQt5.QtCore import QSettings
+from PyQt6.QtCore import QSettings
 
 
 def open(url):

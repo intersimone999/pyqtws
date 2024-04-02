@@ -3,22 +3,22 @@ import logging
 import os
 import time
 
-from PyQt5.Qt import Qt
-from PyQt5.QtCore import QPoint
-from PyQt5.QtCore import QUrl
-from PyQt5.QtCore import QDir
-from PyQt5.QtCore import QFileInfo
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
-from PyQt5.QtWidgets import QMenu, QAction
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QProgressBar, QPushButton, QLabel
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWebEngineWidgets import QWebEnginePage
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWebEngineWidgets import QWebEngineSettings
-from PyQt5.QtWebEngineWidgets import QWebEngineProfile
+from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QPoint
+from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QDir
+from PyQt6.QtCore import QFileInfo
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QMenu, QWidget
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
+from PyQt6.QtWidgets import QGridLayout
+from PyQt6.QtWidgets import QProgressBar, QPushButton, QLabel
+from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWebEngineCore import QWebEnginePage
+from PyQt6.QtWebEngineCore import QWebEngineSettings
+from PyQt6.QtWebEngineCore import QWebEngineProfile
+from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 from config import QTWSConfig
 from plugins import QTWSPluginManager
@@ -66,9 +66,9 @@ class QTWSWebView(QWebEngineView):
         )
 
         if self.config.menu_disabled:
-            self.setContextMenuPolicy(Qt.NoContextMenu)
+            self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
         else:
-            self.setContextMenuPolicy(Qt.CustomContextMenu)
+            self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.__show_menu)
 
         self.__create_actions()
@@ -76,19 +76,19 @@ class QTWSWebView(QWebEngineView):
         self.urlChanged.connect(self.__url_changed)
 
         self.settings().setAttribute(
-            QWebEngineSettings.FullScreenSupportEnabled, 
+            QWebEngineSettings.WebAttribute.FullScreenSupportEnabled, 
             True
         )
         self.settings().setAttribute(
-            QWebEngineSettings.JavascriptCanOpenWindows, 
+            QWebEngineSettings.WebAttribute.JavascriptCanOpenWindows, 
             True
         )
         self.settings().setAttribute(
-            QWebEngineSettings.ScrollAnimatorEnabled, 
+            QWebEngineSettings.WebAttribute.ScrollAnimatorEnabled, 
             True
         )
         self.settings().setAttribute(
-            QWebEngineSettings.PluginsEnabled, 
+            QWebEngineSettings.WebAttribute.PluginsEnabled, 
             True
         )
         
@@ -230,7 +230,7 @@ class QTWSWebView(QWebEngineView):
             self, 
             'Shared', 
             'Copied to the clipboard', 
-            QMessageBox.Ok
+            QMessageBox.StandardButton.Ok
         )
         
     def __open_in_browser(self):
@@ -273,7 +273,7 @@ class QTWSWebPage(QWebEnginePage):
         request_type, 
         is_main_frame: bool
     ):
-        if request_type != QWebEnginePage.NavigationTypeLinkClicked:
+        if request_type != QWebEnginePage.NavigationType.NavigationTypeLinkClicked:
             return True
 
         if not is_main_frame:

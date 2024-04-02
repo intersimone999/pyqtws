@@ -1,4 +1,4 @@
-from PyQt5.QtWebEngineWidgets import QWebEnginePage
+from PyQt6.QtWebEngineCore import QWebEnginePage
 
 from plugins import QTWSPlugin
 from web import QTWSWebView
@@ -11,10 +11,10 @@ class WebRTC(QTWSPlugin):
 
     def web_engine_setup(self, web: QTWSWebView):
         self.web = web
-        self.web.grant_permission(QWebEnginePage.MediaAudioVideoCapture)
-        self.web.grant_permission(QWebEnginePage.MediaAudioCapture)
-        self.web.grant_permission(QWebEnginePage.MediaVideoCapture)
-        self.web.grant_permission(QWebEnginePage.DesktopAudioVideoCapture)
+        self.web.grant_permission(QWebEnginePage.Feature.MediaAudioVideoCapture)
+        self.web.grant_permission(QWebEnginePage.Feature.MediaAudioCapture)
+        self.web.grant_permission(QWebEnginePage.Feature.MediaVideoCapture)
+        self.web.grant_permission(QWebEnginePage.Feature.DesktopAudioVideoCapture)
     
 
 def instance(config: QTWSConfig, params: dict):

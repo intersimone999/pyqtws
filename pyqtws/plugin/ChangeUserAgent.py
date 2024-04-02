@@ -1,6 +1,6 @@
 from config import QTWSConfig
 from plugins import QTWSPlugin
-from PyQt5.QtWebEngineWidgets import QWebEngineProfile
+from PyQt6.QtWebEngineCore import QWebEngineProfile
 
 
 class ChangeUserAgent(QTWSPlugin):

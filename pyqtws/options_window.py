@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtCore import QSettings
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QGridLayout
+from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton
+from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from PyQt6.QtCore import QSettings
 
 import os
 
@@ -142,7 +142,7 @@ class QTWSOptionsWindow(QWidget):
             'You are good to go!', 
             'You can now set silos as default web browser on your system:'
             'it will handle everything for you.', 
-            QMessageBox.Ok
+            QMessageBox.StandardButton.Ok
         )
         self.close()
         return True
@@ -162,6 +162,6 @@ class QTWSOptionsWindow(QWidget):
             self, 
             'No valid broswer selected', 
             message, 
-            QMessageBox.Ok
+            QMessageBox.StandardButton.Ok
         )
         return False

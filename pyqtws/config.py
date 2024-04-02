@@ -2,7 +2,7 @@ import json
 import re
 import os
 
-from PyQt5.QtCore import QUrl
+from PyQt6.QtCore import QUrl
 
 from folder_manager import QTWSFolderManager
 

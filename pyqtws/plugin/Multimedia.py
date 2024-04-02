@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QIcon, QCloseEvent
-from PyQt5.QtWidgets import QAction, QMenu
+from PyQt6.QtCore import QUrl
+from PyQt6.QtGui import QAction, QIcon, QCloseEvent
+from PyQt6.QtWidgets import QMenu
 
 from silo_window import QTWSMainWindow
 from plugins import QTWSPlugin

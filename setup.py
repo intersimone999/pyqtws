@@ -3,7 +3,7 @@
 import setuptools
 
 setuptools.setup(name='pyqtws',
-                 version='0.1.62',
+                 version='0.1.63',
                  scripts=["silo"],
                  description='Standalone website wrapper',
                  url='http://github.com/intersimone999/pyqtws',
@@ -12,6 +12,6 @@ setuptools.setup(name='pyqtws',
                  license='MIT',
                  packages=setuptools.find_packages(),
                  install_requires=[
-                     'PyQt5', 'PyQtWebEngine', 'dbus-python', 'pygi', 'pystray'
+                     'PyQt6', 'PyQt6-WebEngine', 'dbus-python', 'pygi', 'pystray'
                  ],
                  zip_safe=False)

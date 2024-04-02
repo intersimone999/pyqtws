@@ -1,8 +1,7 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
-from PyQt5.QtCore import QSettings, QUrl
-from PyQt5.Qt import QShortcut, Qt, QObject
-from PyQt5.QtGui import QIcon, QCloseEvent, QEnterEvent
-from PyQt5.QtWebEngineWidgets import QWebEngineFullScreenRequest
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout
+from PyQt6.QtCore import Qt, QSettings, QUrl, QObject
+from PyQt6.QtGui import QShortcut, QIcon, QCloseEvent, QEnterEvent
+from PyQt6.QtWebEngineCore import QWebEngineFullScreenRequest
 
 from config import QTWSConfig
 from web import QTWSWebView, QTWSWebPage
@@ -69,11 +68,11 @@ class QTWSMainWindow(QWidget):
         return self._profile_id
         
     def set_always_on_top(self, always_on_top: bool):
-        self.setWindowFlag(Qt.WindowStaysOnTopHint, always_on_top)
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, always_on_top)
         self.show()
     
     def set_maximizable(self, maximizable: bool):
-        self.setWindowFlag(Qt.WindowMaximizeButtonHint, maximizable)
+        self.setWindowFlag(Qt.WindowType.WindowMaximizeButtonHint, maximizable)
         self.show()
         
     def reset_flags(self):
@@ -87,7 +86,7 @@ class QTWSMainWindow(QWidget):
             
     def deactivate_fullscreen(self):
         if self.isFullScreen():
-            self.web.triggerPageAction(QTWSWebPage.ExitFullScreen)
+            self.web.triggerPageAction(QTWSWebPage.WebAction.ExitFullScreen)
             if self.maximized:
                 self.showNormal()
                 self.showMaximized()
@@ -136,7 +135,7 @@ class QTWSMainWindow(QWidget):
             self.maximized = self.isMaximized()
             self.showFullScreen()
         else:
-            self.web.triggerPageAction(QTWSWebPage.ExitFullScreen)
+            self.web.triggerPageAction(QTWSWebPage.WebAction.ExitFullScreen)
             if self.maximized:
                 self.showNormal()
                 self.showMaximized()
@@ -174,27 +173,33 @@ class QTWSMainWindow(QWidget):
 
     def __init_shortcuts(self):
         self.__keyF11 = QShortcut(self)
-        self.__keyF11.setKey(Qt.Key_F11)
+        # self.__keyF11.setKey(Qt.Key.Key_F11)
+        self.__keyF11.setKey("F11")
         self.__keyF11.activated.connect(self.__action_full_screen)
 
         self.__keyCtrlQ = QShortcut(self)
-        self.__keyCtrlQ.setKey(Qt.CTRL + Qt.Key_Q)
+        # self.__keyCtrlQ.setKey(Qt.KeyboardModifier.ControlModifier + Qt.Key.Key_Q)
+        self.__keyCtrlQ.setKey("Ctrl+Q")
         self.__keyCtrlQ.activated.connect(self.__action_quit)
 
         self.__keyCtrlH = QShortcut(self)
-        self.__keyCtrlH.setKey(Qt.CTRL + Qt.Key_H)
+        # self.__keyCtrlH.setKey(Qt.KeyboardModifier.ControlModifier + Qt.Key.Key_H)
+        self.__keyCtrlH.setKey("Ctrl+H")
         self.__keyCtrlH.activated.connect(self.__action_home)
 
         self.__keyCtrlR = QShortcut(self)
-        self.__keyCtrlR.setKey(Qt.CTRL + Qt.Key_R)
+        # self.__keyCtrlR.setKey(Qt.KeyboardModifier.ControlModifier + Qt.Key.Key_R)
+        self.__keyCtrlR.setKey("Ctrl+R")
         self.__keyCtrlR.activated.connect(self.__action_reload)
 
         self.__keyF5 = QShortcut(self)
-        self.__keyF5.setKey(Qt.Key_F5)
+        # self.__keyF5.setKey(Qt.Key.Key_F5)
+        self.__keyF5.setKey("F5")
         self.__keyF5.activated.connect(self.__action_reload)
 
         self.__keyAltLeft = QShortcut(self)
-        self.__keyAltLeft.setKey(Qt.ALT + Qt.Key_Left)
+        # self.__keyAltLeft.setKey(Qt.KeyboardModifier.AltModifier + Qt.Key.Key_Left)
+        self.__keyAltLeft.setKey("Alt+Left")
         self.__keyAltLeft.activated.connect(self.__action_back)
         
         QTWSPluginManager.instance().each(
@@ -215,7 +220,7 @@ class QTWSMainWindow(QWidget):
 
     def __action_quit(self):
         self.__write_settings()
-        QApplication.quit()
+        QApplication.exit(0)
 
     def __action_reload(self):
         self.web.reload()
