@@ -42,7 +42,7 @@ class QTWSWebView(QWebEngineView):
             profile_name = candidate_profiles[0]
         
         if profile_name is None or profile_name.lower() == 'default':
-            self.profile = QWebEngineProfile.defaultProfile()
+            self.profile = QWebEngineProfile("default")
         else:
             self.profile = QWebEngineProfile(profile_name)
         
