@@ -1,11 +1,11 @@
 {
         "name": "YouTube",
-        "scope": ["https:\\/\\/test\\.webrtc\\.org\\/"],
+        "scope": [".*"],
         "plugins": [
             { "name": "WebRTC" },
             { "name": "TrayIcon" }
         ],
-        "home": "https://test.webrtc.org/",
+        "home": "https://mozilla.github.io/webrtc-landing/gum_test.html",
         "icon": "icons/youtube.svg",
         "saveSession": false,
         "menu": []
