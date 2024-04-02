@@ -21,7 +21,7 @@ class FloatingWindow(QTWSPlugin):
         
     def register_shortcuts(self, window):
         self.__keyCtrlF = QShortcut(window)
-        self.__keyCtrlF.setKey(Qt.CTRL + Qt.Key_F)
+        self.__keyCtrlF.setKey("CTRL+F")
         self.__keyCtrlF.activated.connect(lambda: self.__activate_floating())
 
     def add_menu_items(self, menu: QMenu):
@@ -42,6 +42,13 @@ class FloatingWindow(QTWSPlugin):
             event.ignore()
     
     def __activate_floating(self):
+        box = QMessageBox()
+        box.setWindowTitle("Floating mode deprecated")
+        box.setText("The floating mode is now deprecated. Please ignore this plugin.")
+        box.setIcon(QMessageBox.Icon.Information)
+        box.exec()
+        return
+    
         if self.is_window_floating:
             return
         
@@ -59,10 +66,10 @@ class FloatingWindow(QTWSPlugin):
         self.previously_fullscreen = self.window.isFullScreen()
                 
         self.window.set_always_on_top(True)
-        self.window.setMaximumWidth(self.screen.width() / 2)
-        self.window.setMaximumHeight(self.screen.height() / 2)
+        self.window.setMaximumWidth(int(self.screen.width() / 2))
+        self.window.setMaximumHeight(int(self.screen.height() / 2))
         
-        self.window.resize(self.screen.width() / 3, self.screen.height() / 3)
+        self.window.resize(int(self.screen.width() / 3), int(self.screen.height() / 3))
         self.window.set_mouse_enter_callback(lambda e: self.__on_focus(e))
         self.window.set_maximizable(False)
         self.__on_focus(None)
@@ -73,7 +80,7 @@ class FloatingWindow(QTWSPlugin):
             box.setWindowTitle("Floating mode activated")
             box.setText("Just close the window to disable the floating mode.")
             box.setIcon(QMessageBox.Icon.Information)
-            box.exec_()
+            box.exec()
             self.message_box_shown = True
     
     def __deactivate_floating(self):    
@@ -101,7 +108,7 @@ class FloatingWindow(QTWSPlugin):
         self.screen = QApplication.instance().primaryScreen().geometry()
         
         y = self.screen.height() - self.window.height()
-        if event is not None and event.globalX() < self.window.width():
+        if event is not None and event.globalPosition().x() < self.window.width():
             x = self.screen.width() - self.window.width()
             self.window.move(x, y)
         else:

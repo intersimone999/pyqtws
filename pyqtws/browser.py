@@ -10,7 +10,7 @@ def open(url):
     if default_browser is None:
         app = QApplication(["silos"])
         ex = QTWSOptionsWindow(True)
-        app.exec_()
+        app.exec()
     silo_options = QSettings("silos", "Options")
     default_browser = silo_options.value("browser/defaultBrowser")
     subprocess.call([default_browser, url])

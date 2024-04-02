@@ -1,4 +1,6 @@
 from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QThread
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QAction, QIcon, QCloseEvent
 from PyQt6.QtWidgets import QMenu
 
@@ -114,13 +116,11 @@ class Multimedia(QTWSPlugin):
         )
 
         self.__metadata = dict()
-        self.__web_thread = Thread(target=self.__update_playback_status)
-        self.__web_thread.start()
+        self.update_playback_status()
+        
 
-    def __update_playback_status(self):
-        time.sleep(5)
-        while self.window.isVisible():
-            time.sleep(1)
+    def update_playback_status(self):
+        if self.window.isVisible():
             self.__mpris2.refresh_properties()
             
             if self.web.page().title():
@@ -129,8 +129,23 @@ class Multimedia(QTWSPlugin):
                 self.__metadata["xesam:url"] = self.web.page().url().toString()
                 
                 self.__mpris2.set_metadata(self.__metadata)
+            
+        self.__web_thread = MainLoopThread(self)
+        self.__web_thread.finished.connect(self.update_playback_status)
+        self.__web_thread.start()
 
 
+class MainLoopThread(QThread):
+    finished = pyqtSignal()
+
+    def __init__(self, multimedia: Multimedia):
+        super().__init__()
+        self.multimedia = multimedia
+        
+    def run(self):
+        time.sleep(1)
+        self.finished.emit()
+    
 class MultimediaPluginMPRIS2(Object):
     MPRIS_INTERFACE = "org.mpris.MediaPlayer2"
     MPRIS_PLAYER_INTERFACE = "org.mpris.MediaPlayer2.Player"
