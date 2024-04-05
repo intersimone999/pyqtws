@@ -116,7 +116,9 @@ class Multimedia(QTWSPlugin):
         )
 
         self.__metadata = dict()
-        self.update_playback_status()
+        self.__pinger_thread = PingerThread(1)
+        self.__pinger_thread.ping.connect(self.update_playback_status)
+        self.__pinger_thread.start()
         
 
     def update_playback_status(self):
@@ -129,22 +131,19 @@ class Multimedia(QTWSPlugin):
                 self.__metadata["xesam:url"] = self.web.page().url().toString()
                 
                 self.__mpris2.set_metadata(self.__metadata)
-            
-        self.__web_thread = MainLoopThread(self)
-        self.__web_thread.finished.connect(self.update_playback_status)
-        self.__web_thread.start()
+        
 
 
-class MainLoopThread(QThread):
-    finished = pyqtSignal()
+class PingerThread(QThread):
+    ping = pyqtSignal()
 
-    def __init__(self, multimedia: Multimedia):
+    def __init__(self, time: int):
         super().__init__()
-        self.multimedia = multimedia
+        self.time = time
         
     def run(self):
-        time.sleep(1)
-        self.finished.emit()
+        time.sleep(self.time)
+        self.ping.emit()
     
 class MultimediaPluginMPRIS2(Object):
     MPRIS_INTERFACE = "org.mpris.MediaPlayer2"
