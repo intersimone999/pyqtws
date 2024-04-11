@@ -252,12 +252,13 @@ class QTWSWebView(QWebEngineView):
 class QTWSWebPage(QWebEnginePage):
     def __init__(self, config: QTWSConfig, profile: QWebEngineProfile):
         super().__init__(profile, None)
+        self.profile = profile
         self.config = config
         self._last_request = None
         self._last_request_time = None
 
     def createWindow(self, t):
-        fake_page = QWebEnginePage(self)
+        fake_page = QWebEnginePage(self.profile, self)
         fake_page.urlChanged.connect(
             lambda url: self.__create_window_request(
                 fake_page, 
