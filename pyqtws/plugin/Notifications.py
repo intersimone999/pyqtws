@@ -59,12 +59,17 @@ class Notifier:
     def show_notification(notification):
         notification.show()
         image_file = tempfile.NamedTemporaryFile(suffix=".png").name
-        notification.icon().save(image_file)
+        image_created = notification.icon().save(image_file)
+        
+        if not image_created:
+            logging.error("Could not save the icon for the notification")
+            image_file = None
         
         Notifier.notifier.show(notification, image_file)
         
         notification.close()
-        os.remove(image_file)
+        if image_created:
+            os.remove(image_file)
 
 
 class BasicNotifier:
@@ -96,14 +101,17 @@ class LinuxNotifier(BasicNotifier):
             from gi.repository import Notify
             from gi.repository import GdkPixbuf
             
-            image = GdkPixbuf.Pixbuf.new_from_file(image_file)
+            image = None
+            if image_file is not None:
+                image = GdkPixbuf.Pixbuf.new_from_file(image_file)
             
             notify = Notify.Notification.new(
                 notification.title(),
                 notification.message()
             )
-            notify.set_icon_from_pixbuf(image)
-            notify.set_image_from_pixbuf(image)
+            if image is not None:
+                notify.set_icon_from_pixbuf(image)
+                notify.set_image_from_pixbuf(image)
             notify.set_urgency(1)
             
             notify.show()
