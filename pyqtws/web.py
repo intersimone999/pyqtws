@@ -349,10 +349,10 @@ class DownloadProgressWindow(QWidget):
         self.result_path = result_path
         self.__init_ui()
         
-        self.download.downloadProgress.connect(
-            lambda done, total: self.__update(done, total)
+        self.download.receivedBytesChanged.connect(
+            lambda: self.__update(self.download.receivedBytes(), self.download.totalBytes())
         )
-        self.download.finished.connect(
+        self.download.isFinishedChanged.connect(
             lambda: self.__completed()
         )
 
@@ -361,7 +361,7 @@ class DownloadProgressWindow(QWidget):
         
         self.layout = QGridLayout()
         
-        self.label = QLabel(f"Downloading {self.download.path()}...", self)
+        self.label = QLabel(f"Downloading {self.download.downloadFileName()}...", self)
         self.progress_bar = QProgressBar()
         
         self.layout.addWidget(self.label, 0, 0)
