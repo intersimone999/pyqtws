@@ -10,26 +10,14 @@ from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtWidgets import QInputDialog, QMessageBox
 from PyQt6.QtWidgets import QApplication
 
+from folder_manager import QTWSFolderManager
+from silo_window import QTWSMainWindow
+
 import webbrowser
 import hashlib
 
 
 class MultiProfile(QTWSPlugin):
-    @staticmethod
-    def switch_profile(profile, app_id):
-        if profile.id == 'default':
-            webbrowser.open(
-                f"silo://start#{app_id}"
-            )
-        elif profile.id == 'anonymous':
-            webbrowser.open(
-                f"silo://@start#{app_id}"
-            )
-        else:
-            webbrowser.open(
-                f"silo://{profile.id}@start#{app_id}"
-            )
-    
     def __init__(self, config):
         super().__init__("MultiProfile")
         self.config = config
@@ -41,10 +29,6 @@ class MultiProfile(QTWSPlugin):
         self.settings = QSettings(self.config.name, "MultiProfile", window)
         self.__load_profiles()
         
-        if self.active_profile.name.lower() == "default":
-            self.window.setVisible(False)
-            self.__show_profile_manager(True)
-        
         window.setWindowTitle(f"{self.config.name} @ {self.active_profile.name}")
     
     def add_menu_items(self, menu: QMenu):
@@ -55,16 +39,19 @@ class MultiProfile(QTWSPlugin):
             "Switch profile"
         )
         self.profile_manager_action.triggered.connect(
-            lambda: self.__show_profile_manager(False)
+            lambda: self.__show_profile_manager()
         )
         menu.addAction(self.profile_manager_action)
+        
+    def switch_profile(self, profile, app_id):
+        self.window.reset(app_id, QTWSFolderManager.app_file(app_id), profile=profile.name)
     
     def register_shortcuts(self, window):
         self.__keyCtrlP = QShortcut(window)
         self.__keyCtrlP.setKey("Ctrl+P")
-        self.__keyCtrlP.activated.connect(lambda: self.__show_profile_manager(False))
+        self.__keyCtrlP.activated.connect(lambda: self.__show_profile_manager())
     
-    def __show_profile_manager(self, quitter):
+    def __show_profile_manager(self):
         if self.profile_manager is None:
             self.profile_manager = ProfileManagerWindow(
                 self, 
@@ -72,7 +59,6 @@ class MultiProfile(QTWSPlugin):
                 self.settings,
                 self.profiles,
                 self.active_profile,
-                quitter
             )
     
     def __load_profiles(self):
@@ -101,7 +87,6 @@ class MultiProfile(QTWSPlugin):
             else:
                 profile_name = "Anonymous"
             
-            print(self.window.profile_id())
             self.active_profile = Profile(
                 self.window.profile_id(), 
                 profile_name
@@ -136,23 +121,6 @@ class Profile:
     def serialize(self):
         return f"{self.id}:{self.name}"
 
-
-class ProfileAction(QAction):
-    def __init__(self, profile, app_id):
-        self.profile = profile
-        self.app_id = app_id
-        
-        super().__init__(
-            QIcon.fromTheme("user"),
-            f"Open as {profile.name}"
-        )
-        
-        self.triggered.connect(
-            lambda: self.switch()
-        )
-    
-    def switch(self):
-        MultiProfile.switch_profile(self.profile, self.app_id)
 
 class ProfileWidget(QWidget):
     def __init__(
@@ -208,7 +176,7 @@ class ProfileWidget(QWidget):
         self.show()
     
     def switch_profile(self):
-        MultiProfile.switch_profile(self.profile, self.config.app_id)
+        self.profile_manager.plugin.switch_profile(self.profile, self.config.app_id)
         self.profile_manager.close()
     
     def delete(self):
@@ -216,14 +184,13 @@ class ProfileWidget(QWidget):
 
 
 class ProfileManagerWindow(QWidget):
-    def __init__(self, plugin, config, settings, profiles, active, quitter):
+    def __init__(self, plugin, config, settings, profiles, active):
         super().__init__()
         self.plugin = plugin
         self.config = config
         self.settings = settings
         self.profiles = profiles
         self.active_profile = active
-        self.quitter = quitter
         
         self.__init_ui()
     
@@ -334,8 +301,6 @@ class ProfileManagerWindow(QWidget):
     
     def closeEvent(self, event):
         self.plugin.unregister_profile_manager()
-        if self.quitter:
-            QApplication.exit(0)
 
 
 def instance(config: QTWSConfig, params: dict):

@@ -35,25 +35,60 @@ class QTWSMainWindow(QWidget):
     ):
         super().__init__()
         
-        self.config = QTWSConfig(config_filename, app_id)
-        self.app_settings = QSettings(self.config.name, "Save State", self)
+        self.__init_shortcuts()
         
-        self._profile_id = profile
+        self.web = None
+        
+        self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+
+        self.setLayout(self.layout)
+
+        self.stepping_url = url
+        self.reset(app_id, config_filename, profile)
         
         self.__init_ui(url)
         self.__init_web_view()
         self.__read_settings()
-        self.__init_shortcuts()
         
         self.enter_event_handler = EnterEventHandler()
         self.setMouseTracking(True)
         self.installEventFilter(self.enter_event_handler)
         self.default_flags = self.windowFlags()
+        
+    def reset(
+        self, 
+        app_id, 
+        config_filename: str, 
+        profile: str = None
+    ):
+        self.config = QTWSConfig(config_filename, app_id)
+        self.app_settings = QSettings(self.config.name, "Save State", self)
+        
+        self._profile_id = profile
+        
+        if self.web is not None:
+            url = self.web.url().toString()
+            if url != "":
+                self.stepping_url = url
+            self.layout.removeWidget(self.web)
+            
+        if not self.stepping_url or not self.config.in_scope(self.stepping_url):
+            self.stepping_url = self.config.home
+        
+        if type(self.stepping_url) == QUrl:
+            self.stepping_url = self.stepping_url.toString()
+            
+        self.stepping_url = self.stepping_url.replace('silo://', 'https://')
 
+        self.web = QTWSWebView(self.config, self, self._profile_id)
+        self.web.load(QUrl(self.stepping_url))
+        self.layout.addWidget(self.web)
+        
         QTWSPluginManager.instance().each(
             lambda plugin: plugin.window_setup(self)
         )
-
+        
     def closeEvent(self, event: QCloseEvent):
         self.__write_settings()
         
@@ -98,23 +133,6 @@ class QTWSMainWindow(QWidget):
 
     def __init_ui(self, url: str = None):
         self.setWindowTitle(f"{self.config.name}")
-
-        if not url or not self.config.in_scope(url):
-            url = self.config.home
-        
-        if type(url) == QUrl:
-            url = url.toString()
-            
-        url = url.replace('silo://', 'https://')
-
-        self.web = QTWSWebView(self.config, self, self._profile_id)
-        self.web.load(QUrl(url))
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.web)
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        self.setLayout(layout)
 
         self.setWindowIcon(QIcon(self.config.icon))
         QApplication.instance().setDesktopFileName("silo-" + self.config.app_id)
