@@ -18,17 +18,12 @@ class FloatingWindow(QTWSPlugin):
         
     def window_setup(self, window: QTWSMainWindow):
         self.window = window
-        
-    def register_shortcuts(self, window):
-        self.__keyCtrlF = QShortcut(window)
-        self.__keyCtrlF.setKey("CTRL+F")
-        self.__keyCtrlF.activated.connect(lambda: self.__activate_floating())
-
+#         
     def add_menu_items(self, menu: QMenu):
         self.floating_toggle = None
         self.floating_toggle = QAction(
             QIcon.fromTheme("file-zoom-out"),
-            "Enable floating window"
+            "Enable floating window (deprecated)"
         )
         
         self.floating_toggle.triggered.connect(
@@ -47,41 +42,6 @@ class FloatingWindow(QTWSPlugin):
         box.setText("The floating mode is now deprecated. Please ignore this plugin.")
         box.setIcon(QMessageBox.Icon.Information)
         box.exec()
-        return
-    
-        if self.is_window_floating:
-            return
-        
-        self.screen = QApplication.instance().primaryScreen().geometry()
-        
-        self.previous_x = self.window.x()
-        self.previous_y = self.window.y()
-        
-        self.previous_width = self.window.width()
-        self.previous_height = self.window.height()
-        self.previous_max_width = self.window.maximumWidth()
-        self.previous_max_height = self.window.maximumHeight()
-        
-        self.previously_maximized = self.window.isMaximized()
-        self.previously_fullscreen = self.window.isFullScreen()
-                
-        self.window.set_always_on_top(True)
-        self.window.setMaximumWidth(int(self.screen.width() / 2))
-        self.window.setMaximumHeight(int(self.screen.height() / 2))
-        
-        self.window.resize(int(self.screen.width() / 3), int(self.screen.height() / 3))
-        self.window.set_mouse_enter_callback(lambda e: self.__on_focus(e))
-        self.window.set_maximizable(False)
-        self.__on_focus(None)
-        self.is_window_floating = True
-        
-        if not self.message_box_shown:
-            box = QMessageBox()
-            box.setWindowTitle("Floating mode activated")
-            box.setText("Just close the window to disable the floating mode.")
-            box.setIcon(QMessageBox.Icon.Information)
-            box.exec()
-            self.message_box_shown = True
     
     def __deactivate_floating(self):    
         self.window.setMaximumWidth(self.previous_max_width)
