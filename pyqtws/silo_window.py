@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout
-from PyQt6.QtCore import Qt, QSettings, QUrl, QObject
+from PyQt6.QtCore import Qt, QSettings, QUrl, QObject, QTimer
 from PyQt6.QtGui import QShortcut, QIcon, QCloseEvent, QEnterEvent
 from PyQt6.QtWebEngineCore import QWebEngineFullScreenRequest
 
@@ -45,6 +45,7 @@ class QTWSMainWindow(QWidget):
         self.setLayout(self.layout)
 
         self.stepping_url = url
+        self.setGeometry(0, 28, 1000, 750)
         self.reset(app_id, config_filename, profile)
         
         self.__init_ui(url)
@@ -55,6 +56,7 @@ class QTWSMainWindow(QWidget):
         self.setMouseTracking(True)
         self.installEventFilter(self.enter_event_handler)
         self.default_flags = self.windowFlags()
+        self.show()
         
     def reset(
         self, 
@@ -81,13 +83,21 @@ class QTWSMainWindow(QWidget):
             
         self.stepping_url = self.stepping_url.replace('silo://', 'https://')
 
-        self.web = QTWSWebView(self.config, self, self._profile_id)
-        self.web.load(QUrl(self.stepping_url))
+        self.web = QTWSWebView()
         self.layout.addWidget(self.web)
+        self.loader_timer = QTimer(self)
+        self.loader_timer.timeout.connect(self.go_to_stepping_url)
+        self.loader_timer.start(1000)
         
         QTWSPluginManager.instance().each(
             lambda plugin: plugin.window_setup(self)
         )
+        
+    def go_to_stepping_url(self):
+        self.web.initialize(self.config, self, self._profile_id)
+        self.web.load(QUrl(self.stepping_url))
+        self.loader_timer.stop()
+        self.show()
         
     def closeEvent(self, event: QCloseEvent):
         self.__write_settings()

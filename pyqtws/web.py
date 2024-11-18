@@ -28,8 +28,10 @@ import browser as external_browser
 
 
 class QTWSWebView(QWebEngineView):
-    def __init__(self, config: QTWSConfig, window, profile_name: str = None):
+    def __init__(self):
         super().__init__()
+        
+    def initialize(self, config: QTWSConfig, window, profile_name: str = None):
         self.config = config
         self.window = window
         
